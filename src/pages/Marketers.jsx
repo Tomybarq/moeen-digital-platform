@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import MarketingKitDialog from "@/components/marketing/MarketingKitDialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { Megaphone, Search, LayoutGrid, List, Filter } from "lucide-react";
+import { Megaphone, Search, LayoutGrid, List, Filter, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,6 +29,7 @@ export default function Marketers() {
   const [formOpen, setFormOpen]     = useState(false);
   const [editing, setEditing]       = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [kitOpen, setKitOpen]           = useState(false);
   const [search, setSearch]         = useState("");
   const [filterNgo, setFilterNgo]   = useState("all");
   const [filterStatus, setFilterStatus] = useState("active");
@@ -44,6 +46,11 @@ export default function Marketers() {
   const { data: ngos = [] } = useQuery({
     queryKey: ["ngos-list"],
     queryFn: () => base44.entities.NGO.filter({ status: "active" }),
+  });
+
+  const { data: beneficiaries = [] } = useQuery({
+    queryKey: ["beneficiaries"],
+    queryFn: () => base44.entities.Beneficiary.list("-created_date"),
   });
 
   // ── Mutations ─────────────────────────────────────────────────────────────
@@ -115,6 +122,12 @@ export default function Marketers() {
             {archivedCount > 0 && <span className="text-muted-foreground"> · {archivedCount} مؤرشف</span>}
           </p>
         </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" size="sm" onClick={() => setKitOpen(true)}
+            className="cursor-pointer gap-2 text-purple-600 border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+            <Package className="w-4 h-4" />
+            <span className="hidden sm:inline">الطاقم التسويقي للحالات</span>
+          </Button>
         {canEdit && (
           <ActionToolbar
             addLabel="إضافة مسوّق"
@@ -129,6 +142,7 @@ export default function Marketers() {
             deleteConfirmText={`هل أنت متأكد من حذف المسوّق "${selected?.full_name}"؟ لا يمكن التراجع.`}
           />
         )}
+        </div>
       </motion.div>
 
       {/* Filters bar */}
@@ -255,6 +269,9 @@ export default function Marketers() {
           </AnimatePresence>
         </div>
       )}
+
+      {/* Marketing Kit */}
+      <MarketingKitDialog open={kitOpen} onOpenChange={setKitOpen} beneficiaries={beneficiaries} />
 
       {/* Form Dialog */}
       <MarketerFormDialog

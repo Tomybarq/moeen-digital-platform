@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Users, Search, Download, Upload, LayoutGrid, List } from "lucide-react";
+import { Users, Search, Download, Upload, LayoutGrid, List, Package } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,6 +12,7 @@ import BeneficiaryCard from "@/components/beneficiaries/BeneficiaryCard";
 import BeneficiaryFormDialog from "@/components/beneficiaries/BeneficiaryFormDialog";
 import BeneficiaryFilters from "@/components/beneficiaries/BeneficiaryFilters";
 import DocumentsDialog from "@/components/beneficiaries/DocumentsDialog";
+import MarketingKitDialog from "@/components/marketing/MarketingKitDialog";
 
 const PRIORITY_ORDER = { "عاجل": 0, "مرتفع": 1, "متوسط": 2, "منخفض": 3 };
 
@@ -30,6 +31,7 @@ export default function Beneficiaries() {
   const [editingB, setEditingB]   = useState(null);
   const [importOpen, setImportOpen] = useState(false);
   const [docsTarget, setDocsTarget] = useState(null);
+  const [kitOpen, setKitOpen]     = useState(false);
 
   // ── Data ──────────────────────────────────────────────────────────────────
   const { data: beneficiaries = [], isLoading } = useQuery({
@@ -132,6 +134,12 @@ export default function Beneficiaries() {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Marketing Kit */}
+          <Button variant="outline" size="sm" onClick={() => setKitOpen(true)}
+            className="cursor-pointer gap-2 text-purple-600 border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+            <Package className="w-4 h-4" />
+            <span className="hidden sm:inline">الطاقم التسويقي</span>
+          </Button>
           {/* Export */}
           <Button variant="outline" size="sm" onClick={handleExport} disabled={filtered.length === 0}
             className="cursor-pointer gap-2 text-emerald-600 border-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
@@ -229,6 +237,8 @@ export default function Beneficiaries() {
 
       <DocumentsDialog open={!!docsTarget} onOpenChange={v => { if (!v) setDocsTarget(null); }}
         beneficiary={docsTarget} onUpdate={handleDocUpdate} />
+
+      <MarketingKitDialog open={kitOpen} onOpenChange={setKitOpen} beneficiaries={beneficiaries} />
     </div>
   );
 }
