@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Heart,
   ShieldCheck,
+  ClipboardPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,7 +21,8 @@ const baseNavItems = [
   { label: "لوحة التحكم", icon: LayoutDashboard, path: "/", roles: null },
   { label: "المنظمات", icon: Building2, path: "/ngos", roles: null },
   { label: "المستفيدون", icon: Users, path: "/beneficiaries", roles: null },
-  { label: "المسوّقون", icon: Megaphone, path: "/marketers", roles: null },
+  { label: "المسوّقون",      icon: Megaphone,      path: "/marketers",   roles: null },
+  { label: "مساحة الباحث",  icon: ClipboardPlus,  path: "/researcher",  roles: [ROLES.SOCIAL_RESEARCHER, ROLES.PLATFORM_ADMIN, ROLES.NGO_ADMIN] },
 ];
 
 const bottomNavItems = [

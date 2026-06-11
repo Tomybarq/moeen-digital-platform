@@ -22,6 +22,7 @@ import Marketers from "@/pages/Marketers";
 import Profile from "@/pages/Profile";
 import PlatformSettings from "@/pages/PlatformSettings";
 import UsersManagement from "@/pages/UsersManagement";
+import ResearcherWorkspace from "@/pages/ResearcherWorkspace";
 
 // Layout
 import AppLayout from "@/components/layout/AppLayout";
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<PlatformSettings />} />
           <Route path="/users" element={<UsersManagement />} />
+          <Route path="/researcher" element={<ResearcherWorkspace />} />
         </Route>
       </Route>
 
