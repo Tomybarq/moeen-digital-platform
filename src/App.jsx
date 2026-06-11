@@ -21,6 +21,7 @@ import Beneficiaries from "@/pages/Beneficiaries";
 import Marketers from "@/pages/Marketers";
 import Profile from "@/pages/Profile";
 import PlatformSettings from "@/pages/PlatformSettings";
+import UsersManagement from "@/pages/UsersManagement";
 
 // Layout
 import AppLayout from "@/components/layout/AppLayout";
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
           <Route path="/marketers" element={<Marketers />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<PlatformSettings />} />
+          <Route path="/users" element={<UsersManagement />} />
         </Route>
       </Route>
 

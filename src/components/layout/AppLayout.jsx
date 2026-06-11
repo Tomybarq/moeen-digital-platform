@@ -11,6 +11,7 @@ const pageTitles = {
   "/marketers": "المسوّقون",
   "/profile": "الملف الشخصي",
   "/settings": "إعدادات المنصة",
+  "/users": "إدارة المستخدمين",
 };
 
 export default function AppLayout() {
