@@ -1,10 +1,15 @@
-import { Building2, Plus, Search } from "lucide-react";
+import { useState } from "react";
+import { Building2, Search } from "lucide-react";
 import EmptyState from "@/components/shared/EmptyState";
+import ActionToolbar from "@/components/shared/ActionToolbar";
+import ImportDialog from "@/components/shared/ImportDialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function NGOs() {
+  const [selected, setSelected] = useState(null);
+  const [importOpen, setImportOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -16,10 +21,20 @@ export default function NGOs() {
           <h2 className="text-xl font-bold text-foreground">إدارة المنظمات</h2>
           <p className="text-sm text-muted-foreground mt-1">عرض وإدارة جميع المنظمات غير الربحية المسجّلة</p>
         </div>
-        <Button className="cursor-pointer gap-2">
-          <Plus className="w-4 h-4" />
-          إضافة منظمة
-        </Button>
+        <ActionToolbar
+          addLabel="إضافة منظمة"
+          editLabel="تعديل"
+          importLabel="استيراد"
+          archiveLabel="أرشفة"
+          deleteLabel="حذف"
+          hasSelection={!!selected}
+          onAdd={() => {}}
+          onEdit={() => {}}
+          onImport={() => setImportOpen(true)}
+          onArchive={() => {}}
+          onDelete={() => setSelected(null)}
+          deleteConfirmText="هل أنت متأكد من حذف هذه المنظمة؟ لا يمكن التراجع عن هذا الإجراء."
+        />
       </motion.div>
 
       <div className="relative max-w-md">
@@ -36,6 +51,13 @@ export default function NGOs() {
           onAction={() => {}}
         />
       </div>
+
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        entityLabel="المنظمات"
+        onImport={(file) => console.log("Import NGOs:", file.name)}
+      />
     </div>
   );
 }

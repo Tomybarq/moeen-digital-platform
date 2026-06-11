@@ -1,10 +1,15 @@
-import { Users, Plus, Search } from "lucide-react";
+import { useState } from "react";
+import { Users, Search } from "lucide-react";
 import EmptyState from "@/components/shared/EmptyState";
+import ActionToolbar from "@/components/shared/ActionToolbar";
+import ImportDialog from "@/components/shared/ImportDialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function Beneficiaries() {
+  const [selected, setSelected] = useState(null);
+  const [importOpen, setImportOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -16,10 +21,20 @@ export default function Beneficiaries() {
           <h2 className="text-xl font-bold text-foreground">إدارة المستفيدين</h2>
           <p className="text-sm text-muted-foreground mt-1">تتبع وإدارة بيانات المستفيدين من الخدمات</p>
         </div>
-        <Button className="cursor-pointer gap-2">
-          <Plus className="w-4 h-4" />
-          تسجيل مستفيد
-        </Button>
+        <ActionToolbar
+          addLabel="تسجيل مستفيد"
+          editLabel="تعديل"
+          importLabel="استيراد"
+          archiveLabel="أرشفة"
+          deleteLabel="حذف"
+          hasSelection={!!selected}
+          onAdd={() => {}}
+          onEdit={() => {}}
+          onImport={() => setImportOpen(true)}
+          onArchive={() => {}}
+          onDelete={() => setSelected(null)}
+          deleteConfirmText="هل أنت متأكد من حذف بيانات هذا المستفيد؟ لا يمكن التراجع عن هذا الإجراء."
+        />
       </motion.div>
 
       <div className="relative max-w-md">
@@ -36,6 +51,13 @@ export default function Beneficiaries() {
           onAction={() => {}}
         />
       </div>
+
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        entityLabel="المستفيدين"
+        onImport={(file) => console.log("Import Beneficiaries:", file.name)}
+      />
     </div>
   );
 }
