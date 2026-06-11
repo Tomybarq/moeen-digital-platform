@@ -62,15 +62,15 @@ function NavLink({ item, collapsed, onNavigate, isActive }) {
   );
 }
 
-/* Brand logo mark — "M" monogram in Gold on Navy */
+/* Brand logo mark — Moeen Digital Trading logo */
 function LogoMark({ size = 36 }) {
   return (
-    <div
-      className="rounded-lg flex items-center justify-center shrink-0 font-display font-bold text-[#c8972a] border border-[#c8972a]/40"
-      style={{ width: size, height: size, background: "#0d2e42", fontSize: size * 0.5 }}
-    >
-      م
-    </div>
+    <img
+      src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9af41b6fb_logo-.jpg"
+      alt="معين - الرقمية التجارية"
+      className="shrink-0 rounded-lg object-contain"
+      style={{ width: size, height: size }}
+    />
   );
 }
 
