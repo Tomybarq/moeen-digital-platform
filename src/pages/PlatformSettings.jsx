@@ -1,93 +1,86 @@
-import { Settings, Globe, Palette, Bell, Shield, Database } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { useTheme } from "@/components/ThemeProvider";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/AuthContext";
+import UnauthorizedBanner from "@/components/auth/UnauthorizedBanner";
+import RolesPermissionsTab from "@/components/settings/RolesPermissionsTab";
+import ActivityMonitorTab from "@/components/settings/ActivityMonitorTab";
+import PlatformConfigTab from "@/components/settings/PlatformConfigTab";
+import { Shield, BarChart2, Settings, ShieldCheck } from "lucide-react";
 
-const settingsSections = [
-  {
-    icon: Palette,
-    title: "المظهر",
-    description: "تخصيص مظهر المنصة والألوان",
-    hasToggle: true,
-    toggleId: "theme",
-  },
-  {
-    icon: Globe,
-    title: "اللغة والمنطقة",
-    description: "إعدادات اللغة والمنطقة الزمنية",
-  },
-  {
-    icon: Bell,
-    title: "الإشعارات",
-    description: "التحكم في إعدادات الإشعارات",
-  },
-  {
-    icon: Shield,
-    title: "الأمان والخصوصية",
-    description: "إعدادات الأمان وسياسات الخصوصية",
-  },
-  {
-    icon: Database,
-    title: "البيانات والنسخ الاحتياطي",
-    description: "إدارة بيانات المنصة والنسخ الاحتياطية",
-  },
+const TABS = [
+  { id: "roles",    label: "الأدوار والصلاحيات",    icon: Shield,    desc: "إدارة المستخدمين وتعيين الأدوار" },
+  { id: "monitor",  label: "مراقبة النشاط",           icon: BarChart2, desc: "تتبع الأداء والأنشطة" },
+  { id: "config",   label: "إعدادات المنصة",          icon: Settings,  desc: "تكوين إعدادات المنصة" },
 ];
 
 export default function PlatformSettings() {
-  const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("roles");
+
+  if (user?.role !== "platform_admin") {
+    return <UnauthorizedBanner message="هذه الصفحة مخصصة لمدير المنصة فقط. تواصل مع المسؤول لمنحك الصلاحيات المناسبة." />;
+  }
+
+  const activeTabData = TABS.find(t => t.id === activeTab);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h2 className="text-xl font-bold text-foreground">إعدادات المنصة</h2>
-        <p className="text-sm text-muted-foreground mt-1">إدارة وتخصيص إعدادات منصة مُعين</p>
+    <div className="space-y-6 max-w-5xl mx-auto" dir="rtl">
+
+      {/* ── Header ── */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">إعدادات المنصة</h2>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              منصة مُعين الرقمية — لوحة تحكم مدير المنصة
+            </p>
+          </div>
+        </div>
       </motion.div>
 
-      <div className="space-y-4">
-        {settingsSections.map((section, i) => (
-          <motion.div
-            key={section.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-          >
-            <Card className="border-border">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                      <section.icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm text-foreground">{section.title}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{section.description}</p>
-                    </div>
-                  </div>
-                  {section.hasToggle && section.toggleId === "theme" && (
-                    <div className="flex items-center gap-2">
-                      <Label htmlFor="dark-mode" className="text-xs text-muted-foreground">
-                        {theme === "dark" ? "الوضع الداكن" : "الوضع الفاتح"}
-                      </Label>
-                      <Switch
-                        id="dark-mode"
-                        checked={theme === "dark"}
-                        onCheckedChange={toggleTheme}
-                        className="cursor-pointer"
-                      />
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      {/* ── Tab bar ── */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.06 }}>
+        <div className="flex border border-border rounded-xl overflow-hidden bg-muted/20">
+          {TABS.map(tab => {
+            const TIcon = tab.icon;
+            const active = activeTab === tab.id;
+            return (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-3 px-3 text-sm font-medium transition-all cursor-pointer",
+                  active
+                    ? "bg-card shadow-sm text-primary border-b-2 border-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                )}>
+                <TIcon className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline text-xs sm:text-sm">{tab.label}</span>
+                <span className="sm:hidden text-[10px] leading-tight text-center">{tab.label.split(" ")[0]}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active tab description */}
+        {activeTabData && (
+          <p className="text-xs text-muted-foreground mt-2 px-1">{activeTabData.desc}</p>
+        )}
+      </motion.div>
+
+      {/* ── Tab content ── */}
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        {activeTab === "roles"   && <RolesPermissionsTab />}
+        {activeTab === "monitor" && <ActivityMonitorTab />}
+        {activeTab === "config"  && <PlatformConfigTab />}
+      </motion.div>
     </div>
   );
 }
