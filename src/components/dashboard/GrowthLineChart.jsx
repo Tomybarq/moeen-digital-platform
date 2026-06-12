@@ -2,21 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart } from "recharts";
 import { TrendingUp } from "lucide-react";
-
-const DATA = [
-  { month: "يناير",  مستفيدون: 180, منظمات: 38, باحثون: 18 },
-  { month: "فبراير", مستفيدون: 220, منظمات: 40, باحثون: 19 },
-  { month: "مارس",   مستفيدون: 260, منظمات: 41, باحثون: 21 },
-  { month: "أبريل",  مستفيدون: 295, منظمات: 43, باحثون: 22 },
-  { month: "مايو",   مستفيدون: 340, منظمات: 45, باحثون: 23 },
-  { month: "يونيو",  مستفيدون: 390, منظمات: 48, باحثون: 26 },
-  { month: "يوليو",  مستفيدون: 426, منظمات: 50, باحثون: 28 },
-  { month: "أغسطس",  مستفيدون: 471, منظمات: 52, باحثون: 30 },
-  { month: "سبتمبر", مستفيدون: 510, منظمات: 55, باحثون: 32 },
-  { month: "أكتوبر", مستفيدون: 548, منظمات: 57, باحثون: 34 },
-  { month: "نوفمبر", مستفيدون: 580, منظمات: 59, باحثون: 35 },
-  { month: "ديسمبر", مستفيدون: 626, منظمات: 61, باحثون: 38 },
-];
+import { mockGrowthSeries } from "@/lib/mockData";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload?.length) {
@@ -36,7 +22,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function GrowthLineChart() {
+export default function GrowthLineChart({ data = mockGrowthSeries }) {
   return (
     <Card className="border-border lg:col-span-2">
       <CardHeader className="pb-2">
@@ -62,7 +48,7 @@ export default function GrowthLineChart() {
       <CardContent>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="h-56">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={DATA} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+            <AreaChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="gMust" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%"  stopColor="#c8972a" stopOpacity={0.15} />

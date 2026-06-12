@@ -3,15 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ClipboardList, MapPin, User2 } from "lucide-react";
-
-const CASES = [
-  { id: "BNF-2025-001", name: "أحمد محمد السالم",  type: "مادي",      city: "الرياض",       priority: "عاجل",    researcher: "سارة المطيري",   date: "١٢ يونيو ٢٠٢٥" },
-  { id: "BNF-2025-002", name: "فاطمة علي الزهراني", type: "صحي",       city: "جدة",          priority: "مرتفع",   researcher: "خالد العتيبي",   date: "١١ يونيو ٢٠٢٥" },
-  { id: "BNF-2025-003", name: "عبدالله سعد القحطاني",type: "تعليمي",  city: "الدمام",        priority: "متوسط",   researcher: "نوف الغامدي",    date: "١١ يونيو ٢٠٢٥" },
-  { id: "BNF-2025-004", name: "مريم يوسف الحربي",   type: "متعدد",     city: "مكة المكرمة", priority: "عاجل",    researcher: "هند الشهري",     date: "١٠ يونيو ٢٠٢٥" },
-  { id: "BNF-2025-005", name: "سلمان عبدالعزيز",    type: "اجتماعي",  city: "الرياض",        priority: "منخفض",   researcher: "أحمد الدوسري",   date: "١٠ يونيو ٢٠٢٥" },
-  { id: "BNF-2025-006", name: "نورة خالد الرشيدي",  type: "مادي",     city: "تبوك",          priority: "مرتفع",   researcher: "سارة المطيري",   date: "٩ يونيو ٢٠٢٥"  },
-];
+import { mockBeneficiaries } from "@/lib/mockData";
 
 const priorityConfig = {
   عاجل:   { className: "bg-red-500/10 text-red-600 border-red-200" },
@@ -28,7 +20,7 @@ const typeConfig = {
   اجتماعي:   { className: "bg-teal-500/10 text-teal-600" },
 };
 
-export default function RecentCasesTable() {
+export default function RecentCasesTable({ cases = mockBeneficiaries }) {
   return (
     <Card className="border-border">
       <CardHeader className="pb-3">
@@ -38,7 +30,7 @@ export default function RecentCasesTable() {
             آخر الحالات المسجّلة
           </CardTitle>
           <span className="text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded-full">
-            {CASES.length} حالات
+            {cases.length} حالات
           </span>
         </div>
       </CardHeader>
@@ -57,28 +49,28 @@ export default function RecentCasesTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {CASES.map((c, i) => (
+              {cases.map((c, i) => (
                 <motion.tr
-                  key={c.id}
+                  key={c.beneficiary_id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   className="border-b border-border hover:bg-muted/30 transition-colors duration-150"
                 >
                   <TableCell>
-                    <span className="text-xs font-mono text-muted-foreground">{c.id}</span>
+                    <span className="text-xs font-mono text-muted-foreground">{c.beneficiary_id}</span>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <User2 className="w-3.5 h-3.5 text-primary" />
                       </div>
-                      <span className="text-sm font-medium text-foreground">{c.name}</span>
+                      <span className="text-sm font-medium text-foreground">{c.full_name}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`text-xs ${typeConfig[c.type]?.className}`}>
-                      {c.type}
+                    <Badge variant="outline" className={`text-xs ${typeConfig[c.case_type]?.className}`}>
+                      {c.case_type}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -93,10 +85,10 @@ export default function RecentCasesTable() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <span className="text-xs text-muted-foreground">{c.researcher}</span>
+                    <span className="text-xs text-muted-foreground">{c.researcher_name}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-xs text-muted-foreground">{c.date}</span>
+                    <span className="text-xs text-muted-foreground">{c.created_at}</span>
                   </TableCell>
                 </motion.tr>
               ))}

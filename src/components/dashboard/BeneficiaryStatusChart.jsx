@@ -2,13 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { PieChart as PieIcon } from "lucide-react";
-
-const DATA = [
-  { name: "حالات نشطة",   value: 312, color: "#0c3140" },
-  { name: "حالات مدعومة", value: 178, color: "#c8972a" },
-  { name: "حالات عاجلة",  value: 47,  color: "#dc2626" },
-  { name: "مؤرشفة",       value: 89,  color: "#94a3b8" },
-];
+import { mockStatusDistribution } from "@/lib/mockData";
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload?.length) {
@@ -27,9 +21,9 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const CustomLegend = () => (
+const CustomLegend = ({ data }) => (
   <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center mt-3">
-    {DATA.map((d) => (
+    {data.map((d) => (
       <div key={d.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: d.color }} />
         <span>{d.name}</span>
@@ -39,8 +33,8 @@ const CustomLegend = () => (
   </div>
 );
 
-export default function BeneficiaryStatusChart() {
-  const total = DATA.reduce((s, d) => s + d.value, 0);
+export default function BeneficiaryStatusChart({ data = mockStatusDistribution }) {
+  const total = data.reduce((s, d) => s + d.value, 0);
   return (
     <Card className="border-border">
       <CardHeader className="pb-2">
@@ -55,13 +49,13 @@ export default function BeneficiaryStatusChart() {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={DATA}
+                data={data}
                 cx="50%" cy="50%"
                 innerRadius={55} outerRadius={85}
                 paddingAngle={3}
                 dataKey="value"
               >
-                {DATA.map((entry, i) => (
+                {data.map((entry, i) => (
                   <Cell key={i} fill={entry.color} stroke="transparent" />
                 ))}
               </Pie>
@@ -69,7 +63,7 @@ export default function BeneficiaryStatusChart() {
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
-        <CustomLegend />
+        <CustomLegend data={data} />
       </CardContent>
     </Card>
   );

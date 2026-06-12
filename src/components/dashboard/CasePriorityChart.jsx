@@ -2,15 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import { BarChart2 } from "lucide-react";
-
-const DATA = [
-  { month: "يناير", عاجل: 22, مرتفع: 45, متوسط: 110, منخفض: 60 },
-  { month: "فبراير", عاجل: 28, مرتفع: 52, متوسط: 98, منخفض: 55 },
-  { month: "مارس",  عاجل: 19, مرتفع: 48, متوسط: 125, منخفض: 70 },
-  { month: "أبريل", عاجل: 35, مرتفع: 60, متوسط: 140, منخفض: 65 },
-  { month: "مايو",  عاجل: 30, مرتفع: 55, متوسط: 132, منخفض: 72 },
-  { month: "يونيو", عاجل: 47, مرتفع: 63, متوسط: 155, منخفض: 80 },
-];
+import { mockPrioritySeries } from "@/lib/mockData";
 
 const COLORS = { عاجل: "#dc2626", مرتفع: "#f97316", متوسط: "#c8972a", منخفض: "#22c55e" };
 
@@ -32,7 +24,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function CasePriorityChart() {
+export default function CasePriorityChart({ data = mockPrioritySeries }) {
   return (
     <Card className="border-border lg:col-span-2">
       <CardHeader className="pb-2">
@@ -54,7 +46,7 @@ export default function CasePriorityChart() {
       <CardContent>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="h-56">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={DATA} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} barSize={10}>
+            <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} barSize={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
