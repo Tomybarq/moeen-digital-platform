@@ -24,6 +24,7 @@ import PlatformSettings from "@/pages/PlatformSettings";
 import UsersManagement from "@/pages/UsersManagement";
 import ResearcherWorkspace from "@/pages/ResearcherWorkspace";
 import BeneficiaryDetail from "@/pages/BeneficiaryDetail";
+import TechnicalOverview from "@/pages/TechnicalOverview";
 
 // Layout
 import AppLayout from "@/components/layout/AppLayout";
@@ -69,6 +70,8 @@ const AuthenticatedApp = () => {
           <Route path="/users" element={<UsersManagement />} />
           <Route path="/researcher" element={<ResearcherWorkspace />} />
           <Route path="/beneficiaries/detail" element={<BeneficiaryDetail />} />
+          {/* Dev-only engineer handover page */}
+          {import.meta.env.DEV && <Route path="/dev/overview" element={<TechnicalOverview />} />}
         </Route>
       </Route>
 

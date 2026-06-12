@@ -1,0 +1,79 @@
+# منصة مُعين — Mo'een Digital Platform
+
+A role-based digital platform for Saudi non-profit organizations (NGOs) to register,
+manage, and support beneficiary cases — built with React, Tailwind CSS, and a
+fully decoupled data-service layer ready for SQL / Firebase integration.
+
+---
+
+## ✨ Features
+
+- **Beneficiary case management** — full registration wizard, documents, financial assessment
+- **NGO onboarding & management** — organizations, marketers, researchers
+- **Role-based dashboards** — KPIs, growth charts, priority distribution, live activity feed
+- **Strict form validation** — Zod schemas with Arabic error messages (Saudi phone / national ID formats)
+- **RTL-first design** — Arabic typography (Tajawal / IBM Plex Sans Arabic), dark mode, glassmorphism UI
+
+## 🚀 Getting Started
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Configure environment
+cp .env.example .env   # then fill in your Firebase / API credentials
+
+# 3. Run the dev server
+npm run dev
+```
+
+> **Dev-only:** a Technical Overview page for engineers is available at `/dev/overview`
+> (rendered only in development mode).
+
+## 👥 The 5 User Roles (RBAC)
+
+| Role | Key | Access |
+|------|-----|--------|
+| مدير المنصة | `platform_admin` | Full access to all data and settings |
+| مدير منظمة | `ngo_manager` | Manage his NGO's beneficiaries, marketers, and reports |
+| باحث ميداني | `researcher` | Register and edit the cases he created |
+| مسوّق | `marketer` | View his NGO's shareable cases for campaigns |
+| مسؤول حماية البيانات | `pdo` | Read-only audit and compliance access |
+
+- Permission matrix: `src/lib/rbac.js`
+- Declarative UI guard: `<Can role="ADMIN" / permission="beneficiaries:edit">…</Can>` (`src/components/auth/Can.jsx`)
+- Active role source: global `AuthContext` (`src/lib/AuthContext.jsx`) — swap the user
+  source here to migrate to Firebase Auth without touching any guard.
+
+## 🗂 Project Structure
+
+```
+src/
+├── pages/          # One file per route (registered in App.jsx)
+├── components/     # Reusable components, grouped by domain (auth/, dashboard/, …)
+├── services/       # apiService.js — centralized async data layer (backend swap point)
+├── types/          # JSDoc type definitions matching the SQL column names
+├── hooks/          # Custom React hooks
+└── lib/            # rbac.js · schemas.js (Zod) · mockData.js · AuthContext
+```
+
+## 🔌 Instructions for the Backend Engineer
+
+1. **Single integration point:** all UI data access goes through
+   `src/services/apiService.js`. Every function is `async` and documented with a
+   `🔌 SWAP POINT` comment containing the equivalent SQL query — replace the body,
+   keep the return shape.
+2. **Data contracts:** field names in `src/types/index.js` map 1:1 to the SQL
+   column names (`full_name`, `ngo_id`, `case_type`, …). Required fields are marked.
+3. **Validation parity:** frontend rules live in `src/lib/schemas.js`
+   (Saudi phone `^05\d{8}$`, national ID `^[12]\d{9}$`, file limits 5 MB CSV / 10 MB docs) —
+   mirror them server-side.
+4. **Access control:** per-NGO data isolation and role permissions
+   (`src/lib/rbac.js`) must be re-implemented server-side; the frontend checks are UX-only.
+5. **Configuration:** secrets and endpoints come from environment variables —
+   see `.env.example` (Firebase config + `VITE_API_BASE_URL`).
+
+## 🛠 Tech Stack
+
+React 18 · Vite · Tailwind CSS · shadcn/ui (Radix) · Framer Motion · Recharts ·
+TanStack Query · Zod · React Router v6
