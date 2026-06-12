@@ -14,15 +14,15 @@ import GoogleIcon from "@/components/GoogleIcon";
 import { ROLES, ROLE_LABELS, ROLE_DESCRIPTIONS } from "@/lib/rbac";
 
 const roleIcons = {
-  platform_admin:    ShieldCheck,
-  ngo_admin:         Building2,
-  social_researcher: Search,
-  marketer:          Megaphone,
+  platform_admin: ShieldCheck,
+  ngo_manager:    Building2,
+  researcher:     Search,
+  marketer:       Megaphone,
 };
 
 const roleOptions = [
-  ROLES.NGO_ADMIN,
-  ROLES.SOCIAL_RESEARCHER,
+  ROLES.NGO_MANAGER,
+  ROLES.RESEARCHER,
   ROLES.MARKETER,
 ];
 
