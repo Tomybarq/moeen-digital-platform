@@ -60,7 +60,7 @@ export default function ProfilePrefsTab() {
                   <p className="text-xs text-muted-foreground">{theme === "dark" ? "مفعّل" : "معطّل"}</p>
                 </div>
               </div>
-              <Switch checked={theme === "dark"} onCheckedChange={toggleTheme} className="cursor-pointer" />
+              <Switch checked={theme === "dark"} onCheckedChange={toggleTheme} className="cursor-pointer" dir="ltr" />
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/20">
@@ -94,7 +94,7 @@ export default function ProfilePrefsTab() {
                     <p className="text-xs text-muted-foreground">{item.desc}</p>
                   </div>
                 </div>
-                <Switch checked={item.val} onCheckedChange={item.set} className="cursor-pointer" />
+                <Switch checked={item.val} onCheckedChange={item.set} className="cursor-pointer" dir="ltr" />
               </div>
             ))}
           </div>
