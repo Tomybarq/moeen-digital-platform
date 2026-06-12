@@ -39,7 +39,7 @@ function NavLink({ item, collapsed, onNavigate, isActive }) {
       className={cn(
         "relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer group",
         isActive
-          ? "bg-[#c8972a] text-white shadow-md shadow-[#c8972a]/30"
+          ? "bg-[#00A651] text-white shadow-md shadow-[#00A651]/30"
           : "text-white/80 hover:bg-white/10 hover:text-white hover:translate-x-[-2px]"
       )}
     >
@@ -95,12 +95,17 @@ export default function Sidebar({ collapsed, onToggle, onNavigate }) {
         "fixed top-0 right-0 h-screen z-30 flex flex-col transition-[width] duration-300 ease-in-out",
         collapsed ? "w-0 overflow-hidden" : "w-[260px]"
       )}
-      style={{ background: "#0c3140", borderLeft: "1px solid rgba(200,151,42,0.2)" }}
+      style={{
+        background: "rgba(12,49,64,0.88)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        borderLeft: "1px solid rgba(0,166,81,0.25)",
+      }}
     >
       {/* Logo */}
       <div
         className="flex items-center gap-3 px-4 h-16 shrink-0"
-        style={{ borderBottom: "1px solid rgba(200,151,42,0.2)" }}
+        style={{ borderBottom: "1px solid rgba(0,166,81,0.25)" }}
       >
         <LogoMark size={38} />
         <AnimatePresence>
@@ -114,7 +119,7 @@ export default function Sidebar({ collapsed, onToggle, onNavigate }) {
               <p className="font-display font-bold text-white text-base leading-tight whitespace-nowrap">
                 معين
               </p>
-              <p className="text-[#c8972a] text-[10px] font-medium whitespace-nowrap leading-tight tracking-wide">
+              <p className="text-[#34d27b] text-[10px] font-medium whitespace-nowrap leading-tight tracking-wide">
                 الرقمية التجارية
               </p>
             </motion.div>
@@ -139,7 +144,7 @@ export default function Sidebar({ collapsed, onToggle, onNavigate }) {
           />
         ))}
 
-        <div className="my-3 mx-1" style={{ borderTop: "1px solid rgba(200,151,42,0.2)" }} />
+        <div className="my-3 mx-1" style={{ borderTop: "1px solid rgba(0,166,81,0.25)" }} />
 
         {visibleBottom.map(item => (
           <NavLink
@@ -153,7 +158,7 @@ export default function Sidebar({ collapsed, onToggle, onNavigate }) {
       </nav>
 
       {/* Collapse Toggle */}
-      <div className="px-2 pb-4 shrink-0" style={{ borderTop: "1px solid rgba(200,151,42,0.15)" }}>
+      <div className="px-2 pb-4 shrink-0" style={{ borderTop: "1px solid rgba(0,166,81,0.2)" }}>
         <button
           onClick={onToggle}
           aria-label={collapsed ? "توسيع القائمة" : "طي القائمة"}

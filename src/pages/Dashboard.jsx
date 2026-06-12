@@ -98,15 +98,15 @@ export default function Dashboard() {
       >
         {/* Decorative circles */}
         <div className="absolute top-0 left-0 w-64 h-64 rounded-full opacity-10 -translate-x-24 -translate-y-24"
-          style={{ background: "#c8972a" }} />
+          style={{ background: "#00A651" }} />
         <div className="absolute bottom-0 right-8 w-40 h-40 rounded-full opacity-5"
           style={{ background: "#ffffff" }} />
 
         <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <span className="text-amber-300 text-sm font-medium">{greeting}</span>
+              <Sparkles className="w-5 h-5 text-emerald-400" />
+              <span className="text-emerald-300 text-sm font-medium">{greeting}</span>
               {user?.ngo_name && !isAdmin && (
                 <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/80">
                   {user.ngo_name}
@@ -122,7 +122,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             {user?.role && (
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm">
-                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span className="text-white text-sm font-medium">{getRoleLabel(user.role)}</span>
               </div>
             )}

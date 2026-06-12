@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Sun, Moon, Menu, Bell, LogOut, UserCircle } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/lib/AuthContext";
@@ -17,15 +18,22 @@ import {
 export default function TopBar({ onMenuToggle, pageTitle }) {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <header
-      className="sticky top-0 z-20 h-16 flex items-center justify-between px-4 md:px-6 backdrop-blur-xl"
+      className={`sticky top-0 z-20 flex items-center justify-between px-4 md:px-6 backdrop-blur-xl transition-all duration-300 ${scrolled ? "h-12 shadow-md" : "h-16"}`}
       style={{
         background: theme === "dark"
-          ? "rgba(10,26,34,0.95)"
-          : "rgba(255,255,255,0.95)",
-        borderBottom: "1px solid rgba(200,151,42,0.25)",
+          ? "rgba(10,26,34,0.85)"
+          : "rgba(255,255,255,0.85)",
+        borderBottom: "1px solid rgba(0,166,81,0.25)",
         boxShadow: "0 1px 8px rgba(12,49,64,0.08)",
       }}
     >
@@ -43,7 +51,7 @@ export default function TopBar({ onMenuToggle, pageTitle }) {
         <div className="flex items-center gap-2">
           <div
             className="hidden md:block w-0.5 h-5 rounded-full"
-            style={{ background: "#c8972a" }}
+            style={{ background: "#00A651" }}
           />
           <h1
             className="text-base font-bold font-display"
@@ -62,12 +70,12 @@ export default function TopBar({ onMenuToggle, pageTitle }) {
           size="icon"
           className="relative cursor-pointer"
           aria-label="الإشعارات"
-          style={{ color: theme === "dark" ? "#c8972a" : "#0c3140" }}
+          style={{ color: theme === "dark" ? "#00A651" : "#0c3140" }}
         >
           <Bell className="w-4.5 h-4.5" />
           <span
             className="absolute top-1.5 left-1.5 w-2 h-2 rounded-full"
-            style={{ background: "#c8972a" }}
+            style={{ background: "#00A651" }}
           />
         </Button>
 
@@ -78,7 +86,7 @@ export default function TopBar({ onMenuToggle, pageTitle }) {
           onClick={toggleTheme}
           aria-label={theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
           className="cursor-pointer"
-          style={{ color: theme === "dark" ? "#c8972a" : "#0c3140" }}
+          style={{ color: theme === "dark" ? "#00A651" : "#0c3140" }}
         >
           <motion.div
             key={theme}

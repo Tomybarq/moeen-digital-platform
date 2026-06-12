@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import MobileBottomNav from "./MobileBottomNav";
 import { cn } from "@/lib/utils";
 
 const pageTitles = {
@@ -68,7 +69,7 @@ export default function AppLayout() {
           onMenuToggle={() => setMobileOpen(true)}
           pageTitle={pageTitle}
         />
-        <div className="p-4 md:p-6 lg:p-8">
+        <div className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8">
           <div
             key={location.pathname}
             className="max-w-[1440px] mx-auto animate-in fade-in slide-in-from-bottom-2 duration-300"
@@ -77,6 +78,9 @@ export default function AppLayout() {
           </div>
         </div>
       </main>
+
+      {/* Mobile bottom navigation */}
+      <MobileBottomNav />
     </div>
   );
 }

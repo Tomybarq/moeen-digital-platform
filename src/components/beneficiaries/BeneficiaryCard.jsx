@@ -9,6 +9,9 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
   AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
 import { hasPermission } from "@/lib/rbac";
@@ -27,7 +30,7 @@ const STATUS_MAP = {
   archived:  { label: "مؤرشف",     cls: "bg-gray-100 text-gray-600 border-gray-200" },
 };
 
-export default function BeneficiaryCard({ beneficiary: b, index = 0, onEdit, onArchive, onDelete, onViewDocs }) {
+export default function BeneficiaryCard({ beneficiary: b, index = 0, onEdit, onArchive, onDelete, onViewDocs, onStatusChange }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const initials = b.full_name?.split(" ").slice(0, 2).map(w => w[0]).join("") || "؟";
@@ -44,8 +47,8 @@ export default function BeneficiaryCard({ beneficiary: b, index = 0, onEdit, onA
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
       className={cn(
-        "group relative bg-card border rounded-2xl p-4 flex flex-col gap-3 hover:shadow-md transition-all duration-200",
-        b.priority === "عاجل" ? "border-red-300 dark:border-red-800" : "border-border hover:border-primary/30"
+        "group relative glass-card border rounded-2xl p-4 flex flex-col gap-3 hover:shadow-xl hover:-translate-y-1 transition-all duration-300",
+        b.priority === "عاجل" ? "border-red-300 dark:border-red-800" : "border-border hover:border-primary/40"
       )}
     >
       {/* Priority stripe */}
@@ -69,9 +72,27 @@ export default function BeneficiaryCard({ beneficiary: b, index = 0, onEdit, onA
                 {b.case_type}
               </span>
             )}
-            <span className={cn("text-xs px-2 py-0.5 rounded-full border font-medium", status.cls)}>
-              {status.label}
-            </span>
+            {canEdit && onStatusChange ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className={cn("text-xs px-2 py-0.5 rounded-full border font-medium cursor-pointer hover:ring-1 hover:ring-primary/40 transition-shadow", status.cls)}>
+                    {status.label} ▾
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" dir="rtl">
+                  {Object.entries(STATUS_MAP).map(([key, s]) => (
+                    <DropdownMenuItem key={key} className="cursor-pointer text-xs"
+                      onClick={() => key !== b.status && onStatusChange(b, key)}>
+                      {s.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <span className={cn("text-xs px-2 py-0.5 rounded-full border font-medium", status.cls)}>
+                {status.label}
+              </span>
+            )}
           </div>
         </div>
       </div>

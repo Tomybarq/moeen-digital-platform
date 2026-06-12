@@ -61,6 +61,8 @@ module.exports = {
   				ring: 'hsl(var(--sidebar-ring))'
   			},
   			brand: {
+  				green:       '#00A651',
+  				'green-dark':'#008a43',
   				navy:        '#0c3140',
   				'navy-dark': '#0d2e42',
   				gold:        '#c8972a',

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&family=Cairo:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,6 +9,8 @@
     /* Mo'een Brand Colors */
     --brand-navy: #0c3140;
     --brand-navy-dark: #0d2e42;
+    --brand-green: #00A651;
+    --brand-green-dark: #008a43;
     --brand-gold: #c8972a;
     --brand-gold-light: #c69321;
     --brand-gray-bg: #f4f5f9;
@@ -20,38 +22,38 @@
     --card-foreground: 207 69% 16%;
     --popover: 0 0% 100%;
     --popover-foreground: 207 69% 16%;
-    --primary: 207 69% 15%;
+    --primary: 149 100% 33%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 20% 95%;
     --secondary-foreground: 207 60% 20%;
     --muted: 220 15% 93%;
     --muted-foreground: 220 10% 48%;
-    --accent: 38 65% 47%;
+    --accent: 149 100% 33%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 20% 88%;
     --input: 220 20% 88%;
-    --ring: 38 65% 47%;
-    --chart-1: 38 65% 47%;
+    --ring: 149 100% 33%;
+    --chart-1: 149 100% 33%;
     --chart-2: 207 69% 30%;
     --chart-3: 199 89% 48%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --font-heading: 'Cairo', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
-    --font-body: 'Noto Sans Arabic', 'Cairo', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Cairo', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Tajawal', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'IBM Plex Sans Arabic', 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Tajawal', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     /* Sidebar — always Deep Navy */
     --sidebar-background: 207 69% 15%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 38 65% 47%;
+    --sidebar-primary: 149 100% 33%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 38 65% 47%;
+    --sidebar-accent: 149 100% 33%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 207 60% 22%;
-    --sidebar-ring: 38 65% 47%;
+    --sidebar-ring: 149 100% 33%;
   }
 
   .dark {
@@ -61,20 +63,20 @@
     --card-foreground: 210 20% 95%;
     --popover: 207 65% 11%;
     --popover-foreground: 210 20% 95%;
-    --primary: 207 69% 20%;
+    --primary: 149 84% 38%;
     --primary-foreground: 0 0% 100%;
     --secondary: 207 50% 16%;
     --secondary-foreground: 210 20% 90%;
     --muted: 207 50% 16%;
     --muted-foreground: 215 15% 55%;
-    --accent: 38 65% 47%;
+    --accent: 149 84% 38%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 98%;
     --border: 207 40% 20%;
     --input: 207 40% 20%;
-    --ring: 38 65% 47%;
-    --chart-1: 38 65% 47%;
+    --ring: 149 84% 38%;
+    --chart-1: 149 84% 38%;
     --chart-2: 207 69% 40%;
     --chart-3: 199 89% 48%;
     --chart-4: 43 74% 66%;
@@ -82,12 +84,12 @@
     /* Sidebar stays Deep Navy in dark mode too */
     --sidebar-background: 207 75% 5%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 38 65% 47%;
+    --sidebar-primary: 149 84% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 38 65% 47%;
+    --sidebar-accent: 149 84% 38%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 207 60% 14%;
-    --sidebar-ring: 38 65% 47%;
+    --sidebar-ring: 149 84% 38%;
   }
 }
 
@@ -122,6 +124,26 @@
   .border-brand-gold { border-color: #c8972a; }
   .ring-brand-gold { ring-color: #c8972a; }
   .focus\:ring-brand-gold:focus { --tw-ring-color: #c8972a; }
+  .bg-brand-green   { background-color: #00A651; }
+  .text-brand-green { color: #00A651; }
+  .border-brand-green { border-color: #00A651; }
+
+  /* Glassmorphism */
+  .glass-card {
+    background: hsl(var(--card) / 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .glass-sidebar {
+    background: rgba(12, 49, 64, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+}
+
+/* Smooth dark-mode transition */
+body, header, aside, main, .glass-card {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
 }
 
 /* RTL-specific scrollbar styling */

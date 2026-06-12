@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EmptyState from "@/components/shared/EmptyState";
+import CardSkeleton from "@/components/shared/CardSkeleton";
 import ImportDialog from "@/components/shared/ImportDialog";
 import BeneficiaryCard from "@/components/beneficiaries/BeneficiaryCard";
 import BeneficiaryFormDialog from "@/components/beneficiaries/BeneficiaryFormDialog";
@@ -232,7 +233,7 @@ export default function Beneficiaries() {
       {isLoading ? (
         <div className={`grid gap-4 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"}`}>
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-56 rounded-2xl bg-muted animate-pulse" />
+            <CardSkeleton key={i} />
           ))}
         </div>
       ) : filtered.length === 0 ? (
@@ -260,6 +261,7 @@ export default function Beneficiaries() {
                   onArchive={handleArchive}
                   onDelete={handleDelete}
                   onViewDocs={(b) => setDocsTarget(b)}
+                  onStatusChange={(b, status) => updateMutation.mutate({ id: b.id, data: { status } })}
                 />
               ))}
             </div>
