@@ -94,6 +94,10 @@ export const AuthProvider = ({ children }) => {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
+      // Map platform "admin" role to app's platform_admin role
+      if (currentUser && currentUser.role === "admin") {
+        currentUser.role = "platform_admin";
+      }
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
