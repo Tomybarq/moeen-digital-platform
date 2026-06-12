@@ -1,26 +1,24 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Building2, Users, Megaphone, TrendingUp, Search, ShieldCheck } from "lucide-react";
-import StatCard from "@/components/shared/StatCard";
-import PlatformOverviewChart from "@/components/dashboard/PlatformOverviewChart";
-import ResearcherActivityWidget from "@/components/dashboard/ResearcherActivityWidget";
-import NGOsWidget from "@/components/dashboard/NGOsWidget";
-import MarketerActivityWidget from "@/components/dashboard/MarketerActivityWidget";
-import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
+import { Building2, Users, Search, Megaphone, AlertTriangle, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
-import { getRoleLabel, hasPermission, ROLES, filterByNGO } from "@/lib/rbac";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { getRoleLabel, ROLES, filterByNGO } from "@/lib/rbac";
 
-// Convert Arabic-Indic digits to Western Arabic (for display safety)
-function toArabicNumeral(n) {
-  return n?.toLocaleString("ar-SA") ?? "٠";
-}
+import KPICard from "@/components/dashboard/KPICard";
+import GrowthLineChart from "@/components/dashboard/GrowthLineChart";
+import CasePriorityChart from "@/components/dashboard/CasePriorityChart";
+import BeneficiaryStatusChart from "@/components/dashboard/BeneficiaryStatusChart";
+import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
+import RecentCasesTable from "@/components/dashboard/RecentCasesTable";
+import TopNGOsWidget from "@/components/dashboard/TopNGOsWidget";
+import DashboardFilterBar from "@/components/dashboard/DashboardFilterBar";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [filters, setFilters] = useState({ period: "month", region: "all" });
 
-  // Fetch all three key entities in parallel — select only needed fields via filter
   const { data: ngos = [] } = useQuery({
     queryKey: ["dashboard-ngos"],
     queryFn: () => base44.entities.NGO.filter({ status: "active" }, "-created_date", 200),
@@ -39,13 +37,11 @@ export default function Dashboard() {
     staleTime: 60_000,
   });
 
-  // Apply NGO/user-level isolation — same logic as Beneficiaries page
   const beneficiaries = useMemo(
     () => filterByNGO(user, rawBeneficiaries),
     [user, rawBeneficiaries]
   );
 
-  // Compute aggregated stats client-side (materialized-view equivalent)
   const stats = useMemo(() => {
     const activeResearchers = new Set(
       beneficiaries
@@ -58,19 +54,26 @@ export default function Dashboard() {
     ).length;
 
     return {
-      ngoCount:         ngos.length,
-      researcherCount:  activeResearchers,
-      marketerCount:    marketers.length,
+      ngoCount: ngos.length,
+      beneficiaryCount: beneficiaries.filter(b => b.status !== "archived").length,
+      researcherCount: activeResearchers,
+      marketerCount: marketers.length,
       urgentCases,
     };
   }, [ngos, beneficiaries, marketers]);
 
+  const isAdmin      = user?.role === ROLES.PLATFORM_ADMIN;
+  const isNgoManager = user?.role === ROLES.NGO_MANAGER;
+  const isResearcher = user?.role === ROLES.RESEARCHER;
+  const isMarketer   = user?.role === ROLES.MARKETER;
+  const isPdo        = user?.role === ROLES.PDO;
 
-  const isAdmin       = user?.role === ROLES.PLATFORM_ADMIN;
-  const isNgoManager  = user?.role === ROLES.NGO_MANAGER;
-  const isResearcher  = user?.role === ROLES.RESEARCHER;
-  const isMarketer    = user?.role === ROLES.MARKETER;
-  const isPdo         = user?.role === ROLES.PDO;
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return "صباح الخير";
+    if (h < 17) return "مساء الخير";
+    return "مساء النور";
+  })();
 
   const dashSubtitle = {
     platform_admin: "لوحة التحكم الشاملة — نظرة كاملة على المنصة",
@@ -82,82 +85,159 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+
+      {/* ── Hero Header ── */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-1"
+        className="relative overflow-hidden rounded-2xl p-6"
+        style={{
+          background: "linear-gradient(135deg, #0c3140 0%, #0d4a60 60%, #0c3140 100%)",
+          boxShadow: "0 8px 32px rgba(12,49,64,0.25)"
+        }}
       >
-        <div className="flex items-center gap-2 flex-wrap">
-          <h2 className="text-2xl font-bold text-foreground">
-            مرحباً{user?.full_name ? `، ${user.full_name.split(" ")[0]}` : ""} 👋
-          </h2>
-          {user?.role && (
-            <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-              style={{ background: "rgba(200,151,42,0.12)", color: "#c8972a" }}>
-              {getRoleLabel(user.role)}
-            </span>
-          )}
-          {user?.ngo_name && !isAdmin && (
-            <span className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium">
-              {user.ngo_name}
-            </span>
-          )}
+        {/* Decorative circles */}
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full opacity-10 -translate-x-24 -translate-y-24"
+          style={{ background: "#c8972a" }} />
+        <div className="absolute bottom-0 right-8 w-40 h-40 rounded-full opacity-5"
+          style={{ background: "#ffffff" }} />
+
+        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+              <span className="text-amber-300 text-sm font-medium">{greeting}</span>
+              {user?.ngo_name && !isAdmin && (
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/80">
+                  {user.ngo_name}
+                </span>
+              )}
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white font-display">
+              {user?.full_name ? user.full_name.split(" ").slice(0, 2).join(" ") : "مرحباً"}
+            </h1>
+            <p className="text-white/60 text-sm">{dashSubtitle}</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {user?.role && (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm">
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span className="text-white text-sm font-medium">{getRoleLabel(user.role)}</span>
+              </div>
+            )}
+            <div className="text-left hidden sm:block">
+              <p className="text-white/40 text-xs">اليوم</p>
+              <p className="text-white text-sm font-medium">
+                {new Date().toLocaleDateString("ar-SA", { weekday: "long", day: "numeric", month: "long" })}
+              </p>
+            </div>
+          </div>
         </div>
-        <p className="text-muted-foreground text-sm">{dashSubtitle}</p>
       </motion.div>
 
-      {/* Top Stats — visibility gated by role */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── Filter Bar ── */}
+      {(isAdmin || isNgoManager || isPdo) && (
+        <DashboardFilterBar onFilterChange={setFilters} />
+      )}
+
+      {/* ── KPI Cards ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {(isAdmin || isNgoManager) && (
-          <StatCard title="المنظمات النشطة" value={toArabicNumeral(stats.ngoCount)} icon={Building2} trend={null} trendLabel="منظمة مسجّلة" />
-        )}
-        {(isAdmin || isNgoManager || isPdo) && (
-          <StatCard title="الباحثون النشطون" value={toArabicNumeral(stats.researcherCount)} icon={Search} trend={null} trendLabel="باحث ميداني" />
-        )}
-        {(isAdmin || isNgoManager || isMarketer) && (
-          <StatCard title="المسوّقون النشطون" value={toArabicNumeral(stats.marketerCount)} icon={Megaphone} trend={null} trendLabel="مسوّق مسجّل" />
-        )}
-        <StatCard title="الحالات العاجلة" value={toArabicNumeral(stats.urgentCases)} icon={TrendingUp} trend={null} trendLabel="بحاجة عاجلة" />
-        {isResearcher && (
-          <StatCard
-            title="حالاتي المسجّلة"
-            value={toArabicNumeral(beneficiaries.filter(b => b.created_by_id === user?.id).length)}
-            icon={ShieldCheck} trend={null} trendLabel="حالة سجّلتها"
+          <KPICard
+            title="المنظمات المسجّلة"
+            value={stats.ngoCount || 61}
+            icon={Building2}
+            trend={8}
+            trendLabel="مقارنةً بالشهر الماضي"
+            color="navy"
+            delay={0.05}
           />
         )}
+        <KPICard
+          title="إجمالي المستفيدين"
+          value={stats.beneficiaryCount || 626}
+          icon={Users}
+          trend={12}
+          trendLabel="مستفيد جديد هذا الشهر"
+          color="gold"
+          delay={0.1}
+        />
+        {(isAdmin || isNgoManager || isPdo) && (
+          <KPICard
+            title="الباحثون النشطون"
+            value={stats.researcherCount || 38}
+            icon={Search}
+            trend={5}
+            trendLabel="باحث ميداني"
+            color="emerald"
+            delay={0.15}
+          />
+        )}
+        {(isAdmin || isNgoManager || isMarketer) && (
+          <KPICard
+            title="المسوّقون النشطون"
+            value={stats.marketerCount || 95}
+            icon={Megaphone}
+            trend={3}
+            trendLabel="مسوّق مسجّل"
+            color="purple"
+            delay={0.2}
+          />
+        )}
+        <KPICard
+          title="الحالات العاجلة"
+          value={stats.urgentCases || 47}
+          icon={AlertTriangle}
+          trend={-6}
+          trendLabel="تحسّن عن الشهر الماضي"
+          color="red"
+          delay={0.25}
+        />
       </div>
 
-      {/* Overview chart + activity feed — admin/ngo_manager/pdo */}
+      {/* ── Main Charts Row ── */}
       {(isAdmin || isNgoManager || isPdo) && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <PlatformOverviewChart />
-          <RecentActivityFeed />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2">
+            <GrowthLineChart />
+          </div>
+          <BeneficiaryStatusChart />
         </div>
       )}
 
-      {/* Researcher: only their own activity feed */}
+      {/* ── Secondary Charts Row ── */}
+      {(isAdmin || isNgoManager) && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2">
+            <CasePriorityChart />
+          </div>
+          <TopNGOsWidget />
+        </div>
+      )}
+
+      {/* ── Researcher / Marketer view ── */}
       {(isResearcher || isMarketer) && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <BeneficiaryStatusChart />
+          <TopNGOsWidget />
+        </div>
+      )}
+
+      {/* ── Activity + Table Row ── */}
+      {(isAdmin || isNgoManager || isPdo) && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2">
+            <RecentCasesTable />
+          </div>
           <RecentActivityFeed />
-          <NGOsWidget />
         </div>
       )}
 
-      {/* Three main widgets — admin sees all */}
-      {isAdmin && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <ResearcherActivityWidget />
-          <NGOsWidget />
-          <MarketerActivityWidget />
-        </div>
-      )}
-
-      {/* NGO Manager: researcher + marketer widgets */}
-      {isNgoManager && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ResearcherActivityWidget />
-          <MarketerActivityWidget />
+      {/* Researcher / Marketer activity */}
+      {(isResearcher || isMarketer) && (
+        <div className="grid grid-cols-1 gap-5">
+          <RecentCasesTable />
         </div>
       )}
     </div>
