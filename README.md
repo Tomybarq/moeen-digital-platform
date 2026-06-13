@@ -6,7 +6,7 @@
 <img src="https://img.shields.io/badge/Status-Active-22C55E?style=for-the-badge" />
 <img src="https://img.shields.io/badge/Language-Arabic_RTL-F97316?style=for-the-badge" />
 
-# 🌟 Mo'een Digital Platform — منصة معين الرقمية
+# 🌟 Moeen Digital Platform — منصة معين الرقمية
 
 ### **بيت التمكين | Beit Al-Tamkeen**
 > An intelligent digital platform connecting charitable organizations, beneficiaries, and field researchers — powered by AI and built for impact.
