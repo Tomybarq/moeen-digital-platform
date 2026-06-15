@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import UserService from "@/services/UserService";
 import { useAuth } from "@/lib/AuthContext";
-import { ROLE_LABELS, ROLES, PERMISSIONS, getRoleColor } from "@/lib/rbac";
+import { ROLE_LABELS, ROLES, getRoleColor } from "@/lib/rbac";
 import RoleBadge from "@/components/auth/RoleBadge";
+import PermissionsMatrix from "@/components/settings/PermissionsMatrix";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -15,49 +16,10 @@ import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
 import {
   Search, UserPlus, Mail, Shield, MoreHorizontal, UserCheck, UserX,
-  Loader2, ShieldCheck, CheckCircle2, AlertTriangle, Users,
+  Loader2, CheckCircle2, AlertTriangle, Users,
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
-// Role permission summary cards
-function RolePermissionsCard({ role, label }) {
-  const perms = PERMISSIONS[role] || [];
-  const grouped = perms.reduce((acc, p) => {
-    const [res] = p.split(":");
-    if (!acc[res]) acc[res] = [];
-    acc[res].push(p.split(":")[1]);
-    return acc;
-  }, {});
-
-  const resourceLabels = {
-    dashboard: "لوحة التحكم", ngos: "المنظمات", beneficiaries: "المستفيدون",
-    marketers: "المسوّقون", users: "المستخدمون", settings: "الإعدادات",
-  };
-  const actionLabels = { view: "عرض", create: "إضافة", edit: "تعديل", delete: "حذف" };
-
-  return (
-    <div className={cn("rounded-xl border p-4 space-y-3", getRoleColor(role).replace("text-", "border-").split(" ")[0])}>
-      <div className="flex items-center gap-2">
-        <RoleBadge role={role} size="sm" />
-      </div>
-      <div className="space-y-1.5">
-        {Object.entries(grouped).map(([res, actions]) => (
-          <div key={res} className="flex items-center gap-2 text-xs">
-            <span className="text-muted-foreground w-24 shrink-0">{resourceLabels[res] || res}</span>
-            <div className="flex gap-1 flex-wrap">
-              {actions.map(a => (
-                <span key={a} className="px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">
-                  {actionLabels[a] || a}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function RolesPermissionsTab() {
   const { user: me } = useAuth();
@@ -272,22 +234,7 @@ export default function RolesPermissionsTab() {
       </Card>
 
       {/* Role permissions matrix */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-primary" /> مصفوفة الصلاحيات
-          </CardTitle>
-          <CardDescription>الصلاحيات المحددة لكل دور في المنصة</CardDescription>
-        </CardHeader>
-        <Separator />
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {Object.keys(ROLE_LABELS).map(role => (
-              <RolePermissionsCard key={role} role={role} label={ROLE_LABELS[role]} />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <PermissionsMatrix />
 
       {/* Invite Dialog */}
       <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
