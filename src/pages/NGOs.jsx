@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Building2, Search, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import NGOService from "@/services/NGOService";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,24 +27,24 @@ export default function NGOs() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingNGO, setEditingNGO] = useState(null);
 
-  // Data
+  // Data — goes through NGOService (adapter-agnostic)
   const { data: ngos = [], isLoading } = useQuery({
     queryKey: ["ngos"],
-    queryFn: () => base44.entities.NGO.list("-created_date"),
+    queryFn: () => NGOService.getAll(),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.NGO.create(data),
+    mutationFn: (data) => NGOService.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["ngos"] }),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.NGO.update(id, data),
+    mutationFn: ({ id, data }) => NGOService.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["ngos"] }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.NGO.delete(id),
+    mutationFn: (id) => NGOService.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["ngos"] }),
   });
 
@@ -63,8 +63,7 @@ export default function NGOs() {
   };
 
   const handleArchive = (ngo) => {
-    const newStatus = ngo.status === "archived" ? "active" : "archived";
-    updateMutation.mutate({ id: ngo.id, data: { status: newStatus } });
+    updateMutation.mutate({ id: ngo.id, data: { status: ngo.status === "archived" ? "active" : "archived" } });
   };
 
   const handleDelete = (ngo) => {
