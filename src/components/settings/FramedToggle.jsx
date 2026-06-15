@@ -10,33 +10,37 @@ export default function FramedToggle({ checked, onCheckedChange, label, activeLa
   const onLabel  = activeLabel   || "مفعّل";
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2">
-      {/* OFF label */}
-      {ActiveIcon && InactiveIcon ? (
-        <InactiveIcon className={cn("w-4 h-4 transition-colors", !checked ? "text-destructive/80" : "text-muted-foreground/50")} />
-      ) : (
-        <span className={cn(
-          "text-xs font-medium transition-colors",
-          !checked ? "text-destructive/80" : "text-muted-foreground/50"
-        )}>
-          {offLabel}
-        </span>
-      )}
+    <div className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-muted/30 px-3 py-2.5 select-none">
+      {/* OFF label — stable width, no layout shift */}
+      <span className="inline-flex items-center justify-end min-w-[42px]">
+        {ActiveIcon && InactiveIcon ? (
+          <InactiveIcon className={cn("w-4 h-4 transition-colors duration-200", !checked ? "text-destructive/80" : "text-muted-foreground/40")} />
+        ) : (
+          <span className={cn(
+            "text-xs font-medium transition-colors duration-200",
+            !checked ? "text-destructive/80" : "text-muted-foreground/40"
+          )}>
+            {offLabel}
+          </span>
+        )}
+      </span>
 
-      {/* Switch — the toggle between states */}
-      <Switch checked={checked} onCheckedChange={onCheckedChange} className="cursor-pointer" />
+      {/* Switch — centred focal point */}
+      <Switch checked={checked} onCheckedChange={onCheckedChange} className="cursor-pointer shrink-0" />
 
-      {/* ON label */}
-      {ActiveIcon && InactiveIcon ? (
-        <ActiveIcon className={cn("w-4 h-4 transition-colors", checked ? "text-primary" : "text-muted-foreground/50")} />
-      ) : (
-        <span className={cn(
-          "text-xs font-medium transition-colors",
-          checked ? "text-primary" : "text-muted-foreground/50"
-        )}>
-          {onLabel}
-        </span>
-      )}
+      {/* ON label — stable width, no layout shift */}
+      <span className="inline-flex items-center justify-start min-w-[42px]">
+        {ActiveIcon && InactiveIcon ? (
+          <ActiveIcon className={cn("w-4 h-4 transition-colors duration-200", checked ? "text-primary" : "text-muted-foreground/40")} />
+        ) : (
+          <span className={cn(
+            "text-xs font-medium transition-colors duration-200",
+            checked ? "text-primary" : "text-muted-foreground/40"
+          )}>
+            {onLabel}
+          </span>
+        )}
+      </span>
     </div>
   );
 }
