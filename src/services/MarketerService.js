@@ -1,10 +1,10 @@
 /**
  * Marketer Domain Service — Mo'een Digital Platform
  */
-import Base44Adapter from "@/adapters/Base44Adapter";
+import { marketerAPI } from "@/services/apiService";
 import BaseService from "@/services/baseService";
 
-const marketerAdapter = Base44Adapter.marketer;
+const marketerAdapter = marketerAPI;
 
 class MarketerServiceClass extends BaseService {
   constructor() {

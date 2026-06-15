@@ -3,28 +3,28 @@
  *
  * Manages user listing, role changes, invites, and profile updates.
  */
-import Base44Adapter from "@/adapters/Base44Adapter";
+import { userAPI } from "@/services/apiService";
 
 const UserService = {
   async getAll() {
-    const result = await Base44Adapter.user.getAll();
+    const result = await userAPI.getAll();
     return result ?? [];
   },
 
   async update(id, data) {
-    return Base44Adapter.user.update(id, data);
+    return userAPI.update(id, data);
   },
 
   async updateMe(data) {
-    return Base44Adapter.user.updateMe(data);
+    return userAPI.updateMe(data);
   },
 
   async inviteUser(email, role) {
-    return Base44Adapter.user.inviteUser(email, role);
+    return userAPI.inviteUser(email, role);
   },
 
   async getMe() {
-    return Base44Adapter.user.getMe();
+    return userAPI.getMe();
   },
 };
 

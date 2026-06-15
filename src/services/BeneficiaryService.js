@@ -4,10 +4,10 @@
  * All beneficiary CRUD operations go through this service.
  * The UI never touches the adapter or SDK directly.
  */
-import Base44Adapter from "@/adapters/Base44Adapter";
+import { beneficiaryAPI } from "@/services/apiService";
 import BaseService from "@/services/baseService";
 
-const beneficiaryAdapter = Base44Adapter.beneficiary;
+const beneficiaryAdapter = beneficiaryAPI;
 
 class BeneficiaryServiceClass extends BaseService {
   constructor() {

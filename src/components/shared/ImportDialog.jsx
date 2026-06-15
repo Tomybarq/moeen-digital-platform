@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Upload, FileText, CheckCircle2, X, AlertTriangle, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Base44Adapter from "@/adapters/Base44Adapter";
+import { entityBulkCreate, entityCreate } from "@/services/apiService";
 import { sanitizeFormData } from "@/lib/validation";
 import { validateImportFile, IMPORT_MAX_MB } from "@/lib/schemas";
 import { ErrorLogger } from "@/lib/errorLogger";
@@ -114,7 +114,7 @@ export default function ImportDialog({ open, onOpenChange, entityLabel, entityNa
         const chunk = validRows.slice(i, i + BULK_CHUNK_SIZE);
         try {
           if (entityName) {
-            await Base44Adapter.entityBulkCreate(entityName, chunk.map(r => r.data));
+            await entityBulkCreate(entityName, chunk.map(r => r.data));
           }
           imported += chunk.length;
         } catch (err) {
@@ -122,7 +122,7 @@ export default function ImportDialog({ open, onOpenChange, entityLabel, entityNa
           // to surface per-row errors without losing the whole batch
           for (const { rowNum, data } of chunk) {
             try {
-              if (entityName) await Base44Adapter.entityCreate(entityName, data);
+              if (entityName) await entityCreate(entityName, data);
               imported++;
             } catch (rowErr) {
               skipped++;

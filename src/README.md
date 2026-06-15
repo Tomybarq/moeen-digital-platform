@@ -61,12 +61,14 @@ src/
 ### Data Flow
 
 ```
-Page / Component → Domain Service → Adapter → Backend SDK
+Page / Component → Domain Service → apiService.js → Adapter → Backend SDK
 ```
 
-- **No component or page imports `base44` from `@/api/base44Client` directly.**
-- Only two files may touch the SDK: `adapters/Base44Adapter.js` and `lib/AuthContext.jsx` (platform-managed).
-- To swap backends, replace only the adapter — services stay identical.
+- **`apiService.js` is the ONLY file that imports `Base44Adapter`.**
+- Domain services (`NGOService`, `BeneficiaryService`, etc.) import from `apiService.js`.
+- Only three files touch the SDK: `adapters/Base44Adapter.js`, `services/apiService.js`, and `lib/AuthContext.jsx` (platform-managed).
+- **Zero frontend components** (pages, modals, hooks) call the adapter or SDK directly.
+- To swap backends, replace only `Base44Adapter.js` with another adapter (e.g. `SupabaseAdapter`) — the entire platform stays identical.
 
 ## 🔌 Architecture — Backend-Agnostic Data Layer
 

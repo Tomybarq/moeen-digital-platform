@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Upload, X, ZoomIn, Trash2, FileText, Image, AlertTriangle, Loader2 } from "lucide-react";
-import Base44Adapter from "@/adapters/Base44Adapter";
+import { uploadFile } from "@/services/apiService";
 import { validateDocumentFile, DOCUMENT_MAX_MB } from "@/lib/schemas";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -28,7 +28,7 @@ export default function DocumentsDialog({ open, onOpenChange, beneficiary, onUpd
     setUploading(true);
     const uploaded = [];
     for (const file of Array.from(files)) {
-      const { file_url } = await Base44Adapter.uploadFile(file);
+      const { file_url } = await uploadFile(file);
       uploaded.push(file_url);
     }
     const newDocs = [...docs, ...uploaded];

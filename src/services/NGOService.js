@@ -11,10 +11,10 @@
  *
  * This file stays identical.
  */
-import Base44Adapter from "@/adapters/Base44Adapter";
+import { ngoAPI } from "@/services/apiService";
 import BaseService from "@/services/baseService";
 
-const ngoAdapter = Base44Adapter.ngo;
+const ngoAdapter = ngoAPI;
 
 class NGOServiceClass extends BaseService {
   constructor() {
