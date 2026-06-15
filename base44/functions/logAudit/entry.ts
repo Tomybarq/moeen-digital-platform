@@ -5,26 +5,14 @@
  * This function is the single writer for all audit events across the platform.
  *
  * Called by:
- *   - Entity automations (on NGO/Beneficiary/Marketer/User CRUD)
+ *   - Entity automations (on NGO/Beneficiary/Marketer CRUD)
+ *     → receives { event: {type, entity_name, entity_id}, data, old_data, changed_fields }
  *   - Frontend (for LOGIN_SUCCESS, LOGIN_FAILURE, ROLE_CHANGE, BULK_EXPORT, etc.)
+ *     → receives flat payload with event_type, resource_type, etc.
  *
  * Security:
  *   - All callers must be authenticated.
  *   - The AuditLog RLS prevents update/delete — entries are immutable.
- *
- * Payload shape:
- * {
- *   event_type: string,
- *   resource_type: string,
- *   resource_id?: string,
- *   resource_label?: string,
- *   associationId?: string,
- *   details?: string,       // JSON string
- *   user_id?: string,
- *   user_role?: string,
- *   ip_address?: string,
- *   user_agent?: string
- * }
  */
 
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.31";
@@ -33,6 +21,57 @@ const SENSITIVE_FIELDS = [
   "national_id", "phone", "phone_alt", "email",
   "password", "token", "secret", "api_key",
 ];
+
+/** Map entity automation event type to audit event type */
+function mapEventType(type) {
+  const map = {
+    create: "CREATE",
+    update: "UPDATE",
+    delete: "DELETE",
+  };
+  return map[type] || type?.toUpperCase() || "UNKNOWN";
+}
+
+/** Extract a human-readable label from entity data */
+function extractLabel(resourceType, data) {
+  if (!data) return null;
+  switch (resourceType) {
+    case "NGO":
+      return data.name || null;
+    case "Beneficiary":
+      return data.full_name || null;
+    case "Marketer":
+      return data.full_name || null;
+    case "User":
+      return data.full_name || data.email || null;
+    default:
+      return null;
+  }
+}
+
+/** Build details JSON for entity automation events (change diff) */
+function buildEntityDetails(oldData, data, changedFields) {
+  if (!changedFields || changedFields.length === 0) return null;
+
+  const diff = { changed_fields: changedFields };
+
+  for (const field of changedFields) {
+    if (SENSITIVE_FIELDS.includes(field)) {
+      diff[field] = {
+        action: `updated_${field}`,
+        before: "[REDACTED]",
+        after: "[REDACTED]",
+      };
+    } else {
+      diff[field] = {
+        before: oldData?.[field] ?? null,
+        after: data?.[field] ?? null,
+      };
+    }
+  }
+
+  return JSON.stringify(diff);
+}
 
 function sanitiseDetails(detailsStr) {
   if (!detailsStr) return null;
@@ -80,18 +119,30 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const {
-      event_type,
-      resource_type,
-      resource_id = null,
-      resource_label = null,
-      associationId = null,
-      details = null,
-      user_id = null,
-      user_role = null,
-      ip_address = null,
-      user_agent = null,
-    } = payload;
+    // ── Detect call source ──────────────────────────────────────────
+    const isEntityAutomation = !!(payload.event && payload.event.entity_name);
+
+    let event_type, resource_type, resource_id, resource_label, associationId, details;
+
+    if (isEntityAutomation) {
+      // Entity automation format
+      const { event, data, old_data, changed_fields } = payload;
+
+      event_type = mapEventType(event.type);
+      resource_type = event.entity_name;
+      resource_id = event.entity_id || null;
+      resource_label = extractLabel(resource_type, data);
+      associationId = data?.ngo_id || null;
+      details = buildEntityDetails(old_data, data, changed_fields);
+    } else {
+      // Direct call format
+      event_type = payload.event_type;
+      resource_type = payload.resource_type;
+      resource_id = payload.resource_id || null;
+      resource_label = payload.resource_label || null;
+      associationId = payload.associationId || user.ngo_id || null;
+      details = sanitiseDetails(payload.details || null);
+    }
 
     if (!event_type || !resource_type) {
       return Response.json(
@@ -100,19 +151,17 @@ Deno.serve(async (req) => {
       );
     }
 
-    const sanitised = sanitiseDetails(details);
-
     const entry = {
       event_type,
-      user_id: user_id || user.id,
-      user_role: user_role || user.role,
+      user_id: payload.user_id || user.id,
+      user_role: payload.user_role || user.role,
       resource_type,
       resource_id,
       resource_label,
-      associationId: associationId || user.ngo_id || null,
-      details: sanitised,
-      ip_address,
-      user_agent,
+      associationId,
+      details,
+      ip_address: payload.ip_address || null,
+      user_agent: payload.user_agent || null,
     };
 
     const created = await base44.asServiceRole.entities.AuditLog.create(entry);
