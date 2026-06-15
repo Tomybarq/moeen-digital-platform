@@ -15,6 +15,7 @@ const pageTitles = {
   "/users": "إدارة المستخدمين",
   "/researcher": "مساحة الباحث",
   "/beneficiaries/detail": "ملف المستفيد",
+  "/reports": "التقارير",
 };
 
 export default function AppLayout() {

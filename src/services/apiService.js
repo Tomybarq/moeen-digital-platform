@@ -150,3 +150,16 @@ export async function createNotification(data)         { return Base44Adapter.no
 export async function markNotificationRead(id)          { return Base44Adapter.notification.markRead(id); }
 export async function markAllNotificationsRead()        { return Base44Adapter.notification.markAllRead(); }
 export async function deleteNotification(id)            { return Base44Adapter.notification.delete(id); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Reporting Engine
+// ═══════════════════════════════════════════════════════════════════════════
+
+export async function generateReport(reportType, filters = {}, format = "json") {
+  const { base44 } = await import("@/api/base44Client");
+  return base44.functions.invoke("generateReport", {
+    report_type: reportType,
+    filters,
+    format,
+  });
+}

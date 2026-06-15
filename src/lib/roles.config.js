@@ -101,6 +101,7 @@ export const PERMISSIONS = {
     "settings:view", "settings:edit",
     "marketing:view",
     "researcher_workspace:view",
+    "reports:view",
   ],
   ngo_manager: [
     "dashboard:view",
@@ -109,6 +110,7 @@ export const PERMISSIONS = {
     "marketers:view",
     "settings:view",
     "marketing:view",
+    "reports:view",
   ],
   researcher: [
     "dashboard:view",
@@ -117,6 +119,7 @@ export const PERMISSIONS = {
     "beneficiaries:import", "beneficiaries:archive",
     "settings:view",
     "researcher_workspace:view",
+    "reports:view",
   ],
   marketer: [
     "dashboard:view",
@@ -125,12 +128,14 @@ export const PERMISSIONS = {
     "marketing:view",
     "marketers:view",
     "settings:view",
+    "reports:view",
   ],
   pdo: [
     "dashboard:view",
     "ngos:view",
     "beneficiaries:view", "beneficiaries:delete", "beneficiaries:export",
     "settings:view",
+    "reports:view",
   ],
 };
 
