@@ -41,13 +41,24 @@ export default function Login() {
             transition={{ duration: 0.5 }}
             className="flex flex-col gap-6 order-2 lg:order-1 text-center lg:text-right"
           >
-            {/* Logo */}
+            {/* Logo — glass container for transparent + prominent look */}
             <div className="flex justify-center lg:justify-start">
-              <img
-                src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9af41b6fb_logo-.jpg"
-                alt="معين الرقمية التجارية"
-                className="h-28 w-auto object-contain drop-shadow-md"
-              />
+              <div
+                className="rounded-3xl p-5 inline-flex items-center justify-center"
+                style={{
+                  background: "rgba(255,255,255,0.65)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  boxShadow: "0 8px 32px rgba(12,49,64,0.12), 0 2px 8px rgba(0,166,81,0.08)",
+                  border: "1px solid rgba(200,151,42,0.18)",
+                }}
+              >
+                <img
+                  src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9af41b6fb_logo-.jpg"
+                  alt="معين الرقمية التجارية"
+                  className="h-24 w-auto object-contain"
+                />
+              </div>
             </div>
 
             {/* Headlines */}
@@ -137,6 +148,7 @@ export default function Login() {
                       style={{
                         border: "1px solid #e2e8f0",
                         background: "#f8fafc",
+                        color: "#0c3140",
                         direction: "ltr",
                         textAlign: "left",
                       }}
@@ -165,7 +177,7 @@ export default function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full h-11 pr-10 pl-10 rounded-xl border text-sm outline-none transition-all"
-                      style={{ border: "1px solid #e2e8f0", background: "#f8fafc" }}
+                      style={{ border: "1px solid #e2e8f0", background: "#f8fafc", color: "#0c3140" }}
                       onFocus={e => e.target.style.border = "1.5px solid #c8972a"}
                       onBlur={e => e.target.style.border = "1px solid #e2e8f0"}
                       required
