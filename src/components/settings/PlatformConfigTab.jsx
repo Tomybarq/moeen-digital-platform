@@ -59,8 +59,7 @@ export default function PlatformConfigTab() {
           <ConfigRow icon={theme === "dark" ? Moon : Sun}
             title="الوضع الليلي"
             desc={theme === "dark" ? "المنصة تعمل حالياً بالوضع الداكن" : "المنصة تعمل حالياً بالوضع الفاتح"}>
-            <FramedToggle checked={theme === "dark"} onCheckedChange={toggleTheme}
-              activeIcon={Moon} inactiveIcon={Sun} />
+            <FramedToggle checked={theme === "dark"} onCheckedChange={toggleTheme} />
           </ConfigRow>
           <ConfigRow icon={Globe} title="اللغة والمنطقة" desc="العربية — المملكة العربية السعودية 🇸🇦">
             <Badge variant="secondary" className="font-mono text-xs">AR-SA</Badge>
@@ -80,13 +79,11 @@ export default function PlatformConfigTab() {
         <CardContent className="px-5 divide-y divide-border">
           <ConfigRow icon={Shield} title="السماح بتسجيل مستخدمين جدد"
             desc="عند التعطيل لن يتمكن أحد من التسجيل بدون دعوة">
-            <FramedToggle checked={allowRegistration} onCheckedChange={setAllowRegistration}
-              activeLabel="مفتوح" inactiveLabel="مغلق" />
+            <FramedToggle checked={allowRegistration} onCheckedChange={setAllowRegistration} />
           </ConfigRow>
           <ConfigRow icon={Shield} title="وضع الصيانة"
             desc="تعطيل المنصة مؤقتاً للصيانة — يظهر للمستخدمين رسالة توضيحية">
-            <FramedToggle checked={maintenanceMode} onCheckedChange={setMaintenanceMode}
-              activeLabel="مفعّل" inactiveLabel="معطّل" />
+            <FramedToggle checked={maintenanceMode} onCheckedChange={setMaintenanceMode} />
           </ConfigRow>
         </CardContent>
       </Card>
@@ -103,8 +100,7 @@ export default function PlatformConfigTab() {
         <CardContent className="px-5 divide-y divide-border">
           <ConfigRow icon={Bell} title="إشعارات البريد الإلكتروني"
             desc="إرسال تنبيهات للمستخدمين عبر البريد الإلكتروني">
-            <FramedToggle checked={emailNotifs} onCheckedChange={setEmailNotifs}
-              activeLabel="مفعّلة" inactiveLabel="معطّلة" />
+            <FramedToggle checked={emailNotifs} onCheckedChange={setEmailNotifs} />
           </ConfigRow>
         </CardContent>
       </Card>
@@ -121,8 +117,7 @@ export default function PlatformConfigTab() {
         <CardContent className="px-5 divide-y divide-border">
           <ConfigRow icon={Database} title="الاحتفاظ بالبيانات المؤرشفة"
             desc="الاحتفاظ بسجلات المستفيدين والمنظمات المؤرشفة لمدة عام">
-            <FramedToggle checked={dataRetention} onCheckedChange={setDataRetention}
-              activeLabel="مفعّل" inactiveLabel="معطّل" />
+            <FramedToggle checked={dataRetention} onCheckedChange={setDataRetention} />
           </ConfigRow>
         </CardContent>
       </Card>
