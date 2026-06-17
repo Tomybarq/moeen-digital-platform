@@ -4,12 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Paperclip, Upload, X, ZoomIn, Trash2, FileText, Image, AlertTriangle, Loader2 } from "lucide-react";
 import { uploadFile } from "@/services/apiService";
 import { validateDocumentFile, DOCUMENT_MAX_MB } from "@/lib/schemas";
+import { compressImage } from "@/lib/imageCompressor";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DocumentsDialog({ open, onOpenChange, beneficiary, onUpdate }) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [fileStatuses, setFileStatuses] = useState([]); // { name, status, originalKB, compressedKB }
+  const [compressionStats, setCompressionStats] = useState([]); // { name, originalKB, compressedKB, ratio }
   const inputRef = useRef(null);
   const docs = beneficiary?.documents || [];
 
@@ -18,22 +21,58 @@ export default function DocumentsDialog({ open, onOpenChange, beneficiary, onUpd
   const handleUpload = async (files) => {
     if (!files?.length) return;
     setUploadError(null);
+    setCompressionStats([]);
+
+    const fileList = Array.from(files);
 
     // Validate type + size before any upload starts
-    for (const file of Array.from(files)) {
+    for (const file of fileList) {
       const err = validateDocumentFile(file);
       if (err) { setUploadError(err); return; }
     }
 
     setUploading(true);
+
+    // Initialize statuses for all files
+    setFileStatuses(fileList.map((f) => ({ name: f.name, status: "compressing", originalKB: 0, compressedKB: 0 })));
+
     const uploaded = [];
-    for (const file of Array.from(files)) {
-      const { file_url } = await uploadFile(file);
+    const stats = [];
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      const originalKB = Math.round(file.size / 1024);
+
+      // Update status → compressing
+      setFileStatuses((prev) => prev.map((s, idx) => idx === i ? { ...s, status: "compressing", originalKB } : s));
+
+      // Compress
+      const compressed = await compressImage(file);
+      const compressedKB = Math.round(compressed.size / 1024);
+
+      // Update status → uploading
+      setFileStatuses((prev) => prev.map((s, idx) => idx === i ? { ...s, status: "uploading", compressedKB } : s));
+
+      // Upload
+      const { file_url } = await uploadFile(compressed);
       uploaded.push(file_url);
+
+      // Mark done + save stats
+      setFileStatuses((prev) => prev.map((s, idx) => idx === i ? { ...s, status: "done" } : s));
+
+      stats.push({
+        name: file.name,
+        originalKB,
+        compressedKB,
+        ratio: compressedKB < originalKB ? `${(originalKB / 1024).toFixed(1)} → ${(compressedKB / 1024).toFixed(1)}` : null,
+      });
+      setCompressionStats([...stats]);
     }
+
     const newDocs = [...docs, ...uploaded];
     await onUpdate(beneficiary.id, { documents: newDocs });
     setUploading(false);
+    setFileStatuses([]);
   };
 
   const handleRemove = async (url) => {
@@ -66,6 +105,44 @@ export default function DocumentsDialog({ open, onOpenChange, beneficiary, onUpd
           <p className="text-sm font-medium">{uploading ? "جاري الرفع…" : "انقر لرفع وثائق أو صور"}</p>
           <p className="text-xs text-muted-foreground">يدعم الصور (JPG, PNG, WebP) وملفات PDF — حتى {DOCUMENT_MAX_MB} ميجابايت</p>
         </div>
+
+        {/* Per-file status badges during upload */}
+        {uploading && fileStatuses.length > 0 && (
+          <div className="mt-2 space-y-1.5">
+            {fileStatuses.map((fs, idx) => (
+              <div key={idx} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/60 border border-border">
+                <Loader2 className="w-3.5 h-3.5 text-primary animate-spin shrink-0" />
+                <span className="text-xs truncate flex-1">{fs.name}</span>
+                <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
+                  {fs.status === "compressing" && "جاري الضغط…"}
+                  {fs.status === "uploading" && "جاري الرفع…"}
+                  {fs.status === "done" && "✓"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Compression stats after upload */}
+        {compressionStats.length > 0 && !uploading && (
+          <div className="mt-2 space-y-1">
+            {compressionStats.map((stat, idx) => (
+              <div key={idx} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                <span className="text-xs text-muted-foreground truncate flex-1">{stat.name}</span>
+                {stat.ratio ? (
+                  <span className="text-xs text-primary font-medium shrink-0 whitespace-nowrap">
+                    {stat.ratio} KB
+                  </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground shrink-0 whitespace-nowrap">
+                    {stat.originalKB} KB (بدون تغيير)
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {uploadError && (
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-destructive/10 border border-destructive/20">

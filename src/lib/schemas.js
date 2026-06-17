@@ -125,6 +125,7 @@ export function zodValidate(schema, data) {
 // ── File upload validation ───────────────────────────────────────────────────
 export const IMPORT_MAX_MB = 5;
 export const DOCUMENT_MAX_MB = 10;
+export const DOCUMENT_TARGET_KB = 300;
 
 /** Validate an Excel/CSV import file. Returns an Arabic error message or null. */
 export function validateImportFile(file) {
