@@ -22,6 +22,15 @@ const REPORT_TYPES = [
   "financial_overview",
 ];
 
+// Simple djb2 hash → 8-char hex for cache keys (no external deps)
+function simpleHash(str) {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -40,12 +49,36 @@ Deno.serve(async (req) => {
     const reportType = payload.report_type;
     const filters = payload.filters || {};
     const format = payload.format || "json";
+    const forceRefresh = payload.force_refresh === true;
 
     if (!reportType || !REPORT_TYPES.includes(reportType)) {
       return Response.json(
         { error: `Invalid report_type. Must be one of: ${REPORT_TYPES.join(", ")}` },
         { status: 400 }
       );
+    }
+
+    // ── Cache check (skip if force_refresh) ────────────────────
+    let cacheFilterHash = "";
+    if (!forceRefresh) {
+      cacheFilterHash = simpleHash(JSON.stringify({ report_type: reportType, ...filters }));
+      const cacheNow = new Date().toISOString();
+      try {
+        const cached = await base44.asServiceRole.entities.ReportCache.filter({
+          report_type: reportType,
+          filters_hash: cacheFilterHash,
+          expires_at: { $gt: cacheNow },
+        }, "-generated_at", 1);
+        if (cached.length > 0 && cached[0].payload) {
+          const cacheAge = Math.round((Date.now() - new Date(cached[0].generated_at).getTime()) / 1000);
+          const resp = Response.json({ success: true, data: cached[0].payload, from_cache: true });
+          resp.headers.set("X-Cache", "HIT");
+          resp.headers.set("X-Cache-Age", String(cacheAge));
+          return resp;
+        }
+      } catch (e) {
+        console.warn("ReportCache query failed, falling through to fresh generation:", e.message);
+      }
     }
 
     // Resolve NGO scope for ngo_manager / marketer roles
@@ -293,20 +326,58 @@ Deno.serve(async (req) => {
         return Response.json({ error: "Unknown report type" }, { status: 400 });
     }
 
+    // ── Save to cache ─────────────────────────────────────────
+    const saveHash = cacheFilterHash || simpleHash(JSON.stringify({ report_type: reportType, ...filters }));
+    const saveNow = new Date();
+    const expiresAt = new Date(saveNow.getTime() + 15 * 60 * 1000);
+    try {
+      // Upsert: remove old entries for this report_type + hash, then create fresh
+      const existing = await base44.asServiceRole.entities.ReportCache.filter({
+        report_type: reportType,
+        filters_hash: saveHash,
+      });
+      for (const c of existing) {
+        await base44.asServiceRole.entities.ReportCache.delete(c.id);
+      }
+      await base44.asServiceRole.entities.ReportCache.create({
+        report_type: reportType,
+        filters_hash: saveHash,
+        payload: data,
+        generated_at: saveNow.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        generated_by_id: user.id,
+        record_count: data?.summary?.total_beneficiaries || data?.summary?.total || data?.rows?.length || 0,
+      });
+
+      // Opportunistic cleanup of all expired caches
+      const expired = await base44.asServiceRole.entities.ReportCache.filter({
+        expires_at: { $lt: saveNow.toISOString() },
+      });
+      for (const c of expired) {
+        await base44.asServiceRole.entities.ReportCache.delete(c.id);
+      }
+    } catch (e) {
+      console.warn("ReportCache save/cleanup failed:", e.message);
+    }
+
     // ── Format output ─────────────────────────────────────────
     if (format === "csv") {
       const bom = "\uFEFF"; // BOM for Arabic Excel compatibility
       const csvContent = [bom + csvHeaders.join(","), ...csvRows.map(r => r.map(c => `"${String(c || "").replace(/"/g, '""')}"`).join(","))].join("\n");
-      return new Response(csvContent, {
+      const csvResp = new Response(csvContent, {
         status: 200,
         headers: {
           "Content-Type": "text/csv; charset=utf-8",
           "Content-Disposition": `attachment; filename="${reportType}_report.csv"`,
+          "X-Cache": "MISS",
         },
       });
+      return csvResp;
     }
 
-    return Response.json({ success: true, data, csvHeaders, csvRows });
+    const resp = Response.json({ success: true, data, csvHeaders, csvRows });
+    resp.headers.set("X-Cache", "MISS");
+    return resp;
   } catch (error) {
     return Response.json(
       { error: error.message || "Internal server error" },

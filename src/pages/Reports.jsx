@@ -1,11 +1,13 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
 import ReportTemplateCard from "@/components/reports/ReportTemplateCard";
 import ReportFilters from "@/components/reports/ReportFilters";
 import ReportPreview from "@/components/reports/ReportPreview";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, FileDown } from "lucide-react";
+import { BarChart3, FileDown, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 const REPORT_TYPES = [
@@ -19,52 +21,55 @@ const REPORT_TYPES = [
 export default function Reports() {
   const { user } = useAuth();
   const [selectedReport, setSelectedReport] = useState(null);
-  const [reportData, setReportData] = useState(null);
-  const [csvData, setCsvData] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({});
 
-  const handleSelectReport = useCallback(async (reportType) => {
-    if (selectedReport === reportType && reportData) return;
-    setSelectedReport(reportType);
-    setIsLoading(true);
-    setReportData(null);
-    setCsvData(null);
-
-    try {
+  // React Query — 10min stale time (client cache), 15min garbage collection
+  const { data: reportResponse, isFetching, error, refetch } = useQuery({
+    queryKey: ["report", selectedReport, filters],
+    queryFn: async () => {
       const response = await base44.functions.invoke("generateReport", {
-        report_type: reportType,
+        report_type: selectedReport,
         filters,
         format: "json",
       });
-
       if (response.data?.success) {
-        setReportData(response.data.data);
-        setCsvData({ headers: response.data.csvHeaders, rows: response.data.csvRows });
-      } else if (response.data?.error) {
-        toast.error(response.data.error);
+        return {
+          data: response.data.data,
+          csvHeaders: response.data.csvHeaders,
+          csvRows: response.data.csvRows,
+        };
       }
-    } catch (err) {
-      toast.error("فشل توليد التقرير. يرجى المحاولة مرة أخرى.");
-    } finally {
-      setIsLoading(false);
+      if (response.data?.error) {
+        throw new Error(response.data.error);
+      }
+      throw new Error("فشل توليد التقرير");
+    },
+    enabled: !!selectedReport,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "فشل توليد التقرير. يرجى المحاولة مرة أخرى.");
     }
-  }, [selectedReport, reportData, filters]);
+  }, [error]);
+
+  const reportData = reportResponse?.data || null;
+  const csvData = reportResponse ? { headers: reportResponse.csvHeaders, rows: reportResponse.csvRows } : null;
+  const isLoading = isFetching;
+
+  const handleSelectReport = useCallback((reportType) => {
+    setSelectedReport(reportType);
+  }, []);
 
   const handleApplyFilters = useCallback(() => {
-    if (selectedReport) {
-      setReportData(null);
-      handleSelectReport(selectedReport);
-    }
-  }, [selectedReport, filters]);
+    refetch();
+  }, [refetch]);
 
   const handleResetFilters = useCallback(() => {
     setFilters({});
-    if (selectedReport) {
-      setReportData(null);
-      handleSelectReport(selectedReport);
-    }
-  }, [selectedReport]);
+  }, []);
 
   const handleExportJSON = useCallback(() => {
     if (!reportData) return;
@@ -114,9 +119,15 @@ export default function Reports() {
           </p>
         </div>
         {selectedReport && reportData && (
-          <div className="flex items-center gap-2">
-            <FileDown className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">تم توليد التقرير بنجاح</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <FileDown className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">تم توليد التقرير بنجاح</span>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => refetch()} disabled={isLoading} className="h-8 gap-1.5">
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              تحديث
+            </Button>
           </div>
         )}
       </div>

@@ -1,0 +1,83 @@
+{
+  "name": "ReportCache",
+  "type": "object",
+  "properties": {
+    "report_type": {
+      "type": "string",
+      "description": "\u0646\u0648\u0639 \u0627\u0644\u062a\u0642\u0631\u064a\u0631 \u2014 \u0623\u062d\u062f \u0623\u0646\u0648\u0627\u0639 \u0627\u0644\u062a\u0642\u0627\u0631\u064a\u0631 \u0627\u0644\u062e\u0645\u0633\u0629"
+    },
+    "filters_hash": {
+      "type": "string",
+      "description": "\u062a\u062c\u0632\u0626\u0629 \u0639\u0648\u0627\u0645\u0644 \u0627\u0644\u062a\u0635\u0641\u064a\u0629 (djb2 hex) \u0643\u0645\u0641\u062a\u0627\u062d \u0644\u0644\u062a\u062e\u0632\u064a\u0646 \u0627\u0644\u0645\u0624\u0642\u062a"
+    },
+    "payload": {
+      "type": "object",
+      "description": "\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062a\u0642\u0631\u064a\u0631 \u0627\u0644\u0643\u0627\u0645\u0644\u0629 \u0627\u0644\u0645\u062e\u0632\u0646\u0629 \u0645\u0624\u0642\u062a\u0627\u064b"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u0648\u0642\u062a \u0625\u0646\u0634\u0627\u0621 \u0627\u0644\u062a\u062e\u0632\u064a\u0646 \u0627\u0644\u0645\u0624\u0642\u062a"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u0648\u0642\u062a \u0627\u0646\u062a\u0647\u0627\u0621 \u0635\u0644\u0627\u062d\u064a\u0629 \u0627\u0644\u062a\u062e\u0632\u064a\u0646 \u0627\u0644\u0645\u0624\u0642\u062a (TTL: 15 \u062f\u0642\u064a\u0642\u0629)"
+    },
+    "generated_by_id": {
+      "type": "string",
+      "description": "\u0645\u0639\u0631\u0651\u0641 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u0630\u064a \u0623\u0646\u0634\u0623 \u0627\u0644\u062a\u0642\u0631\u064a\u0631"
+    },
+    "record_count": {
+      "type": "number",
+      "description": "\u0639\u062f\u062f \u0627\u0644\u0633\u062c\u0644\u0627\u062a \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645\u0629 \u0644\u062a\u0648\u0644\u064a\u062f \u0647\u0630\u0627 \u0627\u0644\u062a\u0642\u0631\u064a\u0631"
+    }
+  },
+  "required": [
+    "report_type",
+    "filters_hash",
+    "payload"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "platform_admin",
+            "ngo_manager"
+          ]
+        }
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "platform_admin",
+            "ngo_manager"
+          ]
+        }
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "platform_admin",
+            "ngo_manager"
+          ]
+        }
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": {
+          "$in": [
+            "platform_admin",
+            "ngo_manager"
+          ]
+        }
+      }
+    }
+  }
+}
