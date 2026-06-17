@@ -17,7 +17,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
-export default function TopBar({ onMenuToggle, pageTitle }) {
+export default function TopBar({ onMenuToggle, pageTitle, showHamburger, hamburgerRef }) {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
@@ -41,15 +41,19 @@ export default function TopBar({ onMenuToggle, pageTitle }) {
     >
       {/* Left: menu toggle + title */}
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden cursor-pointer hover:bg-[#0c3140]/10"
-          onClick={onMenuToggle}
-          aria-label="فتح القائمة"
-        >
-          <Menu className="w-5 h-5" style={{ color: "#0c3140" }} />
-        </Button>
+        {showHamburger && (
+          <Button
+            ref={hamburgerRef}
+            variant="ghost"
+            size="icon"
+            className="cursor-pointer hover:bg-[#0c3140]/10"
+            onClick={onMenuToggle}
+            aria-label="فتح القائمة"
+            aria-haspopup="dialog"
+          >
+            <Menu className="w-5 h-5" style={{ color: "#0c3140" }} />
+          </Button>
+        )}
         <div className="flex items-center gap-2">
           <div
             className="hidden md:block w-0.5 h-5 rounded-full"

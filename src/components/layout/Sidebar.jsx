@@ -84,9 +84,11 @@ function LogoMark({ size = 36 }) {
   );
 }
 
-export default function Sidebar({ collapsed, onToggle, onNavigate }) {
+export default function Sidebar({ collapsed, onToggle, onNavigate, context = "desktop" }) {
   const location = useLocation();
   const { user } = useAuth();
+
+  const isMobileCtx = context === "mobile";
 
   const visibleMain = baseNavItems.filter(
     item => !item.roles || item.roles.includes(user?.role)
@@ -98,10 +100,20 @@ export default function Sidebar({ collapsed, onToggle, onNavigate }) {
   return (
     <aside
       className={cn(
-        "fixed top-0 right-0 h-screen z-30 flex flex-col overflow-hidden transition-[width] duration-300 ease-in-out",
-        collapsed ? "w-[72px]" : "w-[260px]"
+        "h-screen flex flex-col overflow-hidden",
+        isMobileCtx
+          ? "w-[260px]" // mobile overlay — always full width
+          : cn(
+              "fixed top-0 right-0 z-30 transition-[width] duration-300 ease-in-out",
+              collapsed ? "w-[72px]" : "w-[260px]"
+            )
       )}
-      style={{
+      style={isMobileCtx ? {
+        background: "rgba(12,49,64,0.92)",
+        backdropFilter: "blur(22px)",
+        WebkitBackdropFilter: "blur(22px)",
+        borderLeft: "1px solid rgba(0,166,81,0.4)",
+      } : {
         background: "rgba(12,49,64,0.88)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
@@ -166,23 +178,26 @@ export default function Sidebar({ collapsed, onToggle, onNavigate }) {
         ))}
       </nav>
 
-      {/* Collapse Toggle */}
-      <div className="px-2 pb-4 shrink-0" style={{ borderTop: "1px solid rgba(0,166,81,0.2)" }}>
-        <button
-          onClick={onToggle}
-          aria-label={collapsed ? "توسيع القائمة" : "طي القائمة"}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:bg-white/10 hover:text-white transition-colors duration-200 cursor-pointer mt-2"
-        >
-          {collapsed ? (
-            <ChevronLeft className="w-4 h-4" />
-          ) : (
-            <>
-              <ChevronRight className="w-4 h-4" />
-              <span className="text-xs">طي القائمة</span>
-            </>
-          )}
-        </button>
-      </div>
+      {/* Collapse Toggle — desktop only */}
+      {!isMobileCtx && (
+        <div className="px-2 pb-4 shrink-0" style={{ borderTop: "1px solid rgba(0,166,81,0.2)" }}>
+          <button
+            onClick={onToggle}
+            aria-label={collapsed ? "توسيع القائمة" : "طي القائمة"}
+            aria-expanded={!collapsed}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm text-white/60 hover:bg-white/10 hover:text-white transition-colors duration-200 cursor-pointer mt-2"
+          >
+            {collapsed ? (
+              <ChevronLeft className="w-4 h-4" />
+            ) : (
+              <>
+                <ChevronRight className="w-4 h-4" />
+                <span className="text-xs">طي القائمة</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </aside>
   );
 }
