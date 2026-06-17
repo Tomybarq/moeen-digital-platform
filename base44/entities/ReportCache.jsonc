@@ -39,9 +39,9 @@
     "payload"
   ],
   "rls": {
-    "create": true,
+    "create": false,
     "read": true,
-    "update": true,
-    "delete": true
+    "update": false,
+    "delete": false
   }
 }
