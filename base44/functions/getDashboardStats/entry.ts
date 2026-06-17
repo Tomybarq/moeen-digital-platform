@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
     if (!forceRefresh) {
       const cacheNow = new Date().toISOString();
       try {
-        const cached = await base44.asServiceRole.entities.ReportCache.filter(
+        const cached = await base44.entities.ReportCache.filter(
           {
             report_type: "dashboard_stats",
             filters_hash: cacheHash,
@@ -252,14 +252,14 @@ Deno.serve(async (req) => {
     const saveNow = new Date();
     const expiresAt = new Date(saveNow.getTime() + 5 * 60 * 1000);
     try {
-      const existing = await base44.asServiceRole.entities.ReportCache.filter({
+      const existing = await base44.entities.ReportCache.filter({
         report_type: "dashboard_stats",
         filters_hash: cacheHash,
       });
       for (const c of existing) {
-        await base44.asServiceRole.entities.ReportCache.delete(c.id);
+        await base44.entities.ReportCache.delete(c.id);
       }
-      await base44.asServiceRole.entities.ReportCache.create({
+      await base44.entities.ReportCache.create({
         report_type: "dashboard_stats",
         filters_hash: cacheHash,
         payload: data,
@@ -270,11 +270,11 @@ Deno.serve(async (req) => {
       });
 
       // Opportunistic cleanup of all expired caches
-      const expired = await base44.asServiceRole.entities.ReportCache.filter({
+      const expired = await base44.entities.ReportCache.filter({
         expires_at: { $lt: saveNow.toISOString() },
       });
       for (const c of expired) {
-        await base44.asServiceRole.entities.ReportCache.delete(c.id);
+        await base44.entities.ReportCache.delete(c.id);
       }
     } catch (e) {
       console.warn("Dashboard stats cache save/cleanup failed:", e.message);
