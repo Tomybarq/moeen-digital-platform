@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { Building2, Users, Search, Megaphone, AlertTriangle, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNGOs, fetchBeneficiaries, fetchMarketers } from "@/services/apiService";
+import DashboardStatsService from "@/services/DashboardStatsService";
 import { getRoleLabel, ROLES } from "@/lib/rbac";
 
 import KPICard from "@/components/dashboard/KPICard";
+import KPICardSkeleton from "@/components/dashboard/KPICardSkeleton";
 import GrowthLineChart from "@/components/dashboard/GrowthLineChart";
 import CasePriorityChart from "@/components/dashboard/CasePriorityChart";
 import BeneficiaryStatusChart from "@/components/dashboard/BeneficiaryStatusChart";
@@ -19,48 +20,54 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [filters, setFilters] = useState({ period: "month", region: "all" });
 
-  // All data access goes through the centralized service layer
-  // (src/services/apiService.js) — swap point for the SQL/Firebase backend.
-  const { data: ngos = [] } = useQuery({
-    queryKey: ["dashboard-ngos"],
-    queryFn: () => fetchNGOs({ status: "active" }),
-    staleTime: 60_000
+  // Single aggregated query — server‑side stats (~2 KB instead of ~8 MB)
+  const { data: statsData, isFetching } = useQuery({
+    queryKey: ["dashboard-stats", filters],
+    queryFn: () => DashboardStatsService.getStats(filters),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
-  const { data: rawBeneficiaries = [] } = useQuery({
-    queryKey: ["dashboard-beneficiaries"],
-    queryFn: () => fetchBeneficiaries(),
-    staleTime: 60_000
-  });
+  const stats = statsData || {};
+  const isLoading = isFetching && !statsData;
 
-  const { data: marketers = [] } = useQuery({
-    queryKey: ["dashboard-marketers"],
-    queryFn: () => fetchMarketers({ status: "active" }),
-    staleTime: 60_000
-  });
+  // Transform server stats → chart‑compatible shapes
+  const statusDistributionChart = useMemo(() => {
+    const dist = stats.status_distribution || {};
+    const total = Object.values(dist).reduce((s, v) => s + (v || 0), 0) || 1;
+    return [
+      { name: "حالات نشطة",   value: dist.active || 0,    color: "#0c3140", percent: (dist.active || 0) / total },
+      { name: "حالات مدعومة", value: dist.supported || 0, color: "#00A651", percent: (dist.supported || 0) / total },
+      { name: "حالات عاجلة",  value: stats.urgent_cases_count || 0, color: "#dc2626", percent: (stats.urgent_cases_count || 0) / total },
+      { name: "مؤرشفة",       value: dist.archived || 0,   color: "#94a3b8", percent: (dist.archived || 0) / total },
+    ];
+  }, [stats]);
 
-  // Backend entity RLS already filters data per user role/NGO scope.
-  const beneficiaries = rawBeneficiaries;
+  const topNgosFormatted = useMemo(() => {
+    const ngos = stats.top_ngos || [];
+    const maxCount = Math.max(...ngos.map((n) => n.beneficiary_count || 0), 1);
+    return ngos.map((n) => ({
+      ngo_id: n.id,
+      ngo_name: n.name,
+      city: n.city,
+      total_cases: n.beneficiary_count || 0,
+      activity_pct: Math.round(((n.beneficiary_count || 0) / maxCount) * 100),
+    }));
+  }, [stats]);
 
-  const stats = useMemo(() => {
-    const activeResearchers = new Set(
-      beneficiaries.
-      filter((b) => b.researcher_name && b.status !== "archived").
-      map((b) => b.researcher_name)
-    ).size;
-
-    const urgentCases = beneficiaries.filter(
-      (b) => b.priority === "عاجل" && b.status !== "archived"
-    ).length;
-
-    return {
-      ngoCount: ngos.length,
-      beneficiaryCount: beneficiaries.filter((b) => b.status !== "archived").length,
-      researcherCount: activeResearchers,
-      marketerCount: marketers.length,
-      urgentCases
-    };
-  }, [ngos, beneficiaries, marketers]);
+  const recentCasesFormatted = useMemo(() => {
+    return (stats.recent_beneficiaries || []).map((b) => ({
+      beneficiary_id: b.id?.slice(-8) || b.id || "—",
+      full_name: b.full_name || "—",
+      case_type: b.case_type || "—",
+      city: b.city || "—",
+      priority: b.priority || "—",
+      researcher_name: b.researcher_name || "—",
+      created_at: b.created_date
+        ? new Date(b.created_date).toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" })
+        : "—",
+    }));
+  }, [stats]);
 
   const isAdmin = user?.role === ROLES.PLATFORM_ADMIN;
   const isNgoManager = user?.role === ROLES.NGO_MANAGER;
@@ -143,66 +150,73 @@ export default function Dashboard() {
 
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {(isAdmin || isNgoManager) &&
-        <KPICard
-          title="المنظمات المسجّلة"
-          value={stats.ngoCount || 61}
-          icon={Building2}
-          trend={8}
-          trendLabel="مقارنةً بالشهر الماضي"
-          color="navy"
-          delay={0.05} />
-
+        {(isAdmin || isNgoManager) && (
+          isLoading
+            ? <KPICardSkeleton />
+            : <KPICard
+                title="المنظمات المسجّلة"
+                value={stats.ngo_count || 0}
+                icon={Building2}
+                trend={null}
+                trendLabel="مقارنةً بالشهر الماضي"
+                color="navy"
+                delay={0.05} />
+        )}
+        {isLoading
+          ? <KPICardSkeleton />
+          : <KPICard
+              title="إجمالي المستفيدين"
+              value={stats.beneficiary_count || 0}
+              icon={Users}
+              trend={null}
+              trendLabel="مستفيد جديد هذا الشهر"
+              color="gold"
+              delay={0.1} />
         }
-        <KPICard
-          title="إجمالي المستفيدين"
-          value={stats.beneficiaryCount || 626}
-          icon={Users}
-          trend={12}
-          trendLabel="مستفيد جديد هذا الشهر"
-          color="gold"
-          delay={0.1} />
-        
-        {(isAdmin || isNgoManager || isPdo) &&
-        <KPICard
-          title="الباحثون النشطون"
-          value={stats.researcherCount || 38}
-          icon={Search}
-          trend={5}
-          trendLabel="باحث ميداني"
-          color="emerald"
-          delay={0.15} />
-
+        {(isAdmin || isNgoManager || isPdo) && (
+          isLoading
+            ? <KPICardSkeleton />
+            : <KPICard
+                title="الباحثون النشطون"
+                value={stats.researcher_count || 0}
+                icon={Search}
+                trend={null}
+                trendLabel="باحث ميداني"
+                color="emerald"
+                delay={0.15} />
+        )}
+        {(isAdmin || isNgoManager || isMarketer) && (
+          isLoading
+            ? <KPICardSkeleton />
+            : <KPICard
+                title="المسوّقون النشطون"
+                value={stats.marketer_count || 0}
+                icon={Megaphone}
+                trend={null}
+                trendLabel="مسوّق مسجّل"
+                color="purple"
+                delay={0.2} />
+        )}
+        {isLoading
+          ? <KPICardSkeleton />
+          : <KPICard
+              title="الحالات العاجلة"
+              value={stats.urgent_cases_count || 0}
+              icon={AlertTriangle}
+              trend={null}
+              trendLabel="تحسّن عن الشهر الماضي"
+              color="red"
+              delay={0.25} />
         }
-        {(isAdmin || isNgoManager || isMarketer) &&
-        <KPICard
-          title="المسوّقون النشطون"
-          value={stats.marketerCount || 95}
-          icon={Megaphone}
-          trend={3}
-          trendLabel="مسوّق مسجّل"
-          color="purple"
-          delay={0.2} />
-
-        }
-        <KPICard
-          title="الحالات العاجلة"
-          value={stats.urgentCases || 47}
-          icon={AlertTriangle}
-          trend={-6}
-          trendLabel="تحسّن عن الشهر الماضي"
-          color="red"
-          delay={0.25} />
-        
       </div>
 
       {/* ── Main Charts Row ── */}
       {(isAdmin || isNgoManager || isPdo) &&
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <div className="lg:col-span-2">
-            <GrowthLineChart />
+            <GrowthLineChart data={stats.growth_by_month} />
           </div>
-          <BeneficiaryStatusChart />
+          <BeneficiaryStatusChart data={statusDistributionChart} />
         </div>
       }
 
@@ -210,17 +224,17 @@ export default function Dashboard() {
       {(isAdmin || isNgoManager) &&
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <div className="lg:col-span-2">
-            <CasePriorityChart />
+            <CasePriorityChart data={stats.priority_by_month} />
           </div>
-          <TopNGOsWidget />
+          <TopNGOsWidget ngos={topNgosFormatted} />
         </div>
       }
 
       {/* ── Researcher / Marketer view ── */}
       {(isResearcher || isMarketer) &&
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <BeneficiaryStatusChart />
-          <TopNGOsWidget />
+          <BeneficiaryStatusChart data={statusDistributionChart} />
+          <TopNGOsWidget ngos={topNgosFormatted} />
         </div>
       }
 
@@ -228,7 +242,7 @@ export default function Dashboard() {
       {(isAdmin || isNgoManager || isPdo) &&
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <div className="lg:col-span-2">
-            <RecentCasesTable />
+            <RecentCasesTable cases={recentCasesFormatted} />
           </div>
           <RecentActivityFeed />
         </div>
@@ -237,7 +251,7 @@ export default function Dashboard() {
       {/* Researcher / Marketer activity */}
       {(isResearcher || isMarketer) &&
       <div className="grid grid-cols-1 gap-5">
-          <RecentCasesTable />
+          <RecentCasesTable cases={recentCasesFormatted} />
         </div>
       }
     </div>);
