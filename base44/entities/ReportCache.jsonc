@@ -40,7 +40,18 @@
   ],
   "rls": {
     "create": false,
-    "read": true,
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "platform_admin"
+          }
+        },
+        {
+          "data.generated_by_id": "{{user.id}}"
+        }
+      ]
+    },
     "update": false,
     "delete": false
   }
