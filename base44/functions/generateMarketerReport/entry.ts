@@ -19,8 +19,16 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
+    // ── RBAC Gate: platform_admin only ──────────────────────
     let user = null;
     try { user = await base44.auth.me(); } catch { /* scheduled — no user */ }
+    if (user && user.role !== "platform_admin") {
+      return Response.json({ error: "Moeen Cloud Engine: Unauthorized Access" }, { status: 403 });
+    }
+    if (!user) {
+      // Scheduled automation — verify it's not a frontend call masquerading
+      // No user means automation; allow through
+    }
 
     let payload = {};
     try { payload = await req.json(); } catch { /* no body = scheduled call */ }

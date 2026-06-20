@@ -109,9 +109,13 @@ Deno.serve(async (req) => {
 
     const period = payload.period || "month";
     const region = payload.region || "all";
+    // ── RBAC Gate ────────────────────────────────────────────
+    if (user.role !== "platform_admin" && user.role !== "ngo_manager") {
+      return Response.json({ error: "Moeen Cloud Engine: Unauthorized Access" }, { status: 403 });
+    }
     const ngoScope =
-      user.role === "ngo_manager" || user.role === "marketer"
-        ? user.data?.ngo_id || null
+      user.role === "ngo_manager"
+        ? (user.data?.ngo_id || user.ngo_id || null)
         : null;
     const forceRefresh = payload.force_refresh === true;
 

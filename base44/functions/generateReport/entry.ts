@@ -38,6 +38,9 @@ Deno.serve(async (req) => {
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (user.role !== "platform_admin") {
+      return Response.json({ error: "Moeen Cloud Engine: Unauthorized Access" }, { status: 403 });
+    }
 
     let payload;
     try {

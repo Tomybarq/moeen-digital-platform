@@ -101,7 +101,14 @@ Deno.serve(async (req) => {
         }
       }
     } else {
-      // Direct call format
+      // Direct call format — RBAC enforcement
+      // Only platform_admin can target arbitrary user_ids
+      if (user.role !== "platform_admin") {
+        return Response.json(
+          { error: "Moeen Cloud Engine: Unauthorized Access" },
+          { status: 403 }
+        );
+      }
       userIds = (payload.user_ids && payload.user_ids.length > 0) ? payload.user_ids : [user.id];
       type = payload.type;
       title = payload.title;
