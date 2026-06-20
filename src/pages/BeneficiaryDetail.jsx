@@ -11,7 +11,10 @@ import {
   ArrowRight, Edit2, Archive, Trash2, Printer,
   Users, DollarSign, Home, Heart,
   FileText, Paperclip, CheckCircle2, User,
+  Download, FileSpreadsheet, Loader2,
 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -82,7 +85,53 @@ export default function BeneficiaryDetail() {
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["beneficiaries"] }); navigate("/beneficiaries"); },
   });
 
+  const [exporting, setExporting] = useState(null); // null | "pdf" | "excel"
+
   const handlePrint = () => window.print();
+
+  const handleExportPDF = async () => {
+    setExporting("pdf");
+    try {
+      const response = await base44.functions.invoke("generateBeneficiaryReport", {
+        beneficiary_id: id,
+        format: "pdf",
+      });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${b.full_name || "beneficiary"}_social_research.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("تم تحميل تقرير PDF بنجاح");
+    } catch (err) {
+      toast.error("فشل تصدير التقرير");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    setExporting("excel");
+    try {
+      const response = await base44.functions.invoke("generateBeneficiaryReport", {
+        beneficiary_id: id,
+        format: "excel",
+      });
+      const blob = new Blob([response.data], { type: "text/csv; charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${b.full_name || "beneficiary"}_data.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("تم تحميل ملف Excel بنجاح");
+    } catch (err) {
+      toast.error("فشل تصدير ملف Excel");
+    } finally {
+      setExporting(null);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -132,12 +181,42 @@ export default function BeneficiaryDetail() {
               <Badge className={cn("border", PRIORITY_CLS[b.priority])}>{b.priority}</Badge>
               <Badge className={cn(STATUS_CLS[b.status])}>{STATUS_LABEL[b.status]}</Badge>
               {b.case_type && <Badge variant="outline">{b.case_type}</Badge>}
+              {b.case_classification && (
+                <Badge className={cn(
+                  "border",
+                  b.case_classification === "أولوية قصوى" ? "bg-red-100 text-red-700 border-red-300" :
+                  b.case_classification === "أولوية متوسطة" ? "bg-amber-100 text-amber-700 border-amber-300" :
+                  "bg-gray-100 text-gray-500 border-gray-300"
+                )}>
+                  {b.case_classification}
+                </Badge>
+              )}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <Button variant="outline" size="sm" onClick={handlePrint} className="gap-1.5">
             <Printer className="w-4 h-4" /> طباعة
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportPDF}
+            disabled={exporting === "pdf"}
+            className="gap-1.5 border-brand-navy/30 text-brand-navy hover:bg-brand-navy/5"
+          >
+            {exporting === "pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            PDF
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportExcel}
+            disabled={exporting === "excel"}
+            className="gap-1.5 border-brand-green/30 text-brand-green hover:bg-brand-green/5"
+          >
+            {exporting === "excel" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
+            Excel
           </Button>
           {canEdit && (
             <Button variant="outline" size="sm"
@@ -322,6 +401,7 @@ export default function BeneficiaryDetail() {
               <p className="text-sm">{b.notes}</p>
             </div>
           )}
+          {b.case_classification && <Row label="تصنيف الحالة" value={b.case_classification} />}
           {b.researcher_name && <Row label="الباحث الاجتماعي" value={b.researcher_name} />}
           {b.ngo_name && <Row label="المنظمة" value={b.ngo_name} />}
           {b.approved_by && <Row label="اعتماد" value={b.approved_by} />}
