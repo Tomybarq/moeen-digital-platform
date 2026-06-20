@@ -9,25 +9,25 @@ import FooterCTA from "@/components/landing/FooterCTA";
 import FloatingControls from "@/components/landing/FloatingControls";
 
 const valuePillars = [
-  {
-    icon: Database,
-    title: "جمع البيانات الذكي",
-    en: "Smart Data Collection",
-    desc: "استمارات ذكية وبحوث ميدانية لجمع بيانات المستفيدين بدقة وكفاءة عالية.",
-  },
-  {
-    icon: BarChart3,
-    title: "تحليلات المنظمات",
-    en: "NGO Analytics",
-    desc: "لوحات تحكم فورية وتقارير تحوّل البيانات الخام إلى رؤى قابلة للتنفيذ.",
-  },
-  {
-    icon: Megaphone,
-    title: "تتبع المسوّقين",
-    en: "Marketer Tracking",
-    desc: "متابعة أداء المسوّقين وقياس أثر حملات التبرع عبر لوحة متكاملة.",
-  },
-];
+{
+  icon: Database,
+  title: "جمع البيانات الذكي",
+  en: "Smart Data Collection",
+  desc: "استمارات ذكية وبحوث ميدانية لجمع بيانات المستفيدين بدقة وكفاءة عالية."
+},
+{
+  icon: BarChart3,
+  title: "تحليلات المنظمات",
+  en: "NGO Analytics",
+  desc: "لوحات تحكم فورية وتقارير تحوّل البيانات الخام إلى رؤى قابلة للتنفيذ."
+},
+{
+  icon: Megaphone,
+  title: "تتبع المسوّقين",
+  en: "Marketer Tracking",
+  desc: "متابعة أداء المسوّقين وقياس أثر حملات التبرع عبر لوحة متكاملة."
+}];
+
 
 export default function LandingPage() {
   const [username, setUsername] = useState("");
@@ -49,8 +49,8 @@ export default function LandingPage() {
             <img
               src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9af41b6fb_logo-.jpg"
               alt="معين الرقمية التجارية"
-              className="h-10 w-auto object-contain"
-            />
+              className="h-10 w-auto object-contain" />
+            
             <div className="leading-tight hidden sm:block">
               <p className="font-display font-bold text-brand-navy text-sm">منصة معين الرقمية</p>
               <p className="text-[9px] text-gray-400 tracking-wide">MOEEN DIGITAL TRADING</p>
@@ -80,15 +80,15 @@ export default function LandingPage() {
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7 }}
-                className="mb-10"
-              >
+                className="mb-10">
+                
                 {/* Logo + name */}
                 <div className="flex items-center gap-3 mb-7">
                   <img
                     src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9af41b6fb_logo-.jpg"
                     alt="معين"
-                    className="h-12 w-auto object-contain"
-                  />
+                    className="h-12 w-auto object-contain" />
+                  
                   <div>
                     <p className="font-display font-bold text-white text-lg leading-tight">منصة معين الرقمية</p>
                     <p className="text-[10px] text-brand-gold/60 tracking-widest">MOEEN DIGITAL PLATFORM</p>
@@ -100,8 +100,8 @@ export default function LandingPage() {
                   <span style={{ color: "#c8972a" }}>ذكية</span>
                   {" "}لإدارة العمل الخيري
                 </h1>
-                <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-md">
-                  منصة B2B تربط المستفيدين بالمتبرعين من خلال بيانات آمنة، تحليلات فورية، وأثر قابل للقياس.
+                <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-md">منصة مصصمة بعنايةتربط المستفيدين بالمتبرعين من خلال بيانات آمنة، تحليلات فورية، وأثر قابل للقياس.
+
                 </p>
               </motion.div>
 
@@ -110,25 +110,25 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-4"
-              >
-                {valuePillars.map((p, i) => (
-                  <div
-                    key={p.en}
-                    className="rounded-2xl p-4 sm:p-5 transition-all group"
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      backdropFilter: "blur(8px)",
-                    }}
-                  >
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                
+                {valuePillars.map((p, i) =>
+                <div
+                  key={p.en}
+                  className="rounded-2xl p-4 sm:p-5 transition-all group"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    backdropFilter: "blur(8px)"
+                  }}>
+                  
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(200,151,42,0.12)" }}>
                       <p.icon className="w-5 h-5" style={{ color: "#c8972a" }} />
                     </div>
                     <h3 className="font-bold text-sm text-white mb-1.5">{p.title}</h3>
                     <p className="text-[11px] sm:text-xs leading-relaxed text-white/45">{p.desc}</p>
                   </div>
-                ))}
+                )}
               </motion.div>
 
               {/* Trust badge strip */}
@@ -136,8 +136,8 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5 }}
-                className="mt-8 flex items-center gap-3 flex-wrap"
-              >
+                className="mt-8 flex items-center gap-3 flex-wrap">
+                
                 <TrustBadges />
               </motion.div>
             </div>
@@ -149,13 +149,13 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="w-full max-w-sm"
-            >
+              className="w-full max-w-sm">
+              
               {/* Form Card */}
               <div
                 className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100"
-                style={{ boxShadow: "0 20px 60px -12px rgba(12,49,64,0.12)" }}
-              >
+                style={{ boxShadow: "0 20px 60px -12px rgba(12,49,64,0.12)" }}>
+                
                 {/* Header */}
                 <div className="text-center mb-6">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(12,49,64,0.06)" }}>
@@ -177,8 +177,8 @@ export default function LandingPage() {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         className="w-full h-11 pr-10 pl-4 rounded-xl border border-gray-200 bg-gray-50 text-brand-navy text-sm outline-none transition-all focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30 focus:bg-white"
-                        required
-                      />
+                        required />
+                      
                     </div>
                   </div>
 
@@ -193,14 +193,14 @@ export default function LandingPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full h-11 pr-10 pl-10 rounded-xl border border-gray-200 bg-gray-50 text-brand-navy text-sm outline-none transition-all focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30 focus:bg-white"
-                        required
-                      />
+                        required />
+                      
                       <button
                         type="button"
                         tabIndex={-1}
                         onClick={() => setShowPass(!showPass)}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                      >
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                        
                         {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
@@ -212,9 +212,9 @@ export default function LandingPage() {
                     className="w-full h-12 rounded-xl font-bold text-white text-sm transition-all flex items-center justify-center gap-2 shadow-lg mt-2"
                     style={{
                       background: "linear-gradient(135deg, #0c3140 0%, #1a5470 100%)",
-                      boxShadow: "0 4px 20px rgba(12,49,64,0.35)",
-                    }}
-                  >
+                      boxShadow: "0 4px 20px rgba(12,49,64,0.35)"
+                    }}>
+                    
                     <Lock className="w-4 h-4" />
                     الدخول للمنصة
                   </button>
@@ -251,8 +251,8 @@ export default function LandingPage() {
         {/* Subtle radial glow behind map area */}
         <div
           className="absolute top-1/2 left-[30%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none opacity-20"
-          style={{ background: "radial-gradient(circle, #c8972a 0%, transparent 70%)" }}
-        />
+          style={{ background: "radial-gradient(circle, #c8972a 0%, transparent 70%)" }} />
+        
 
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -262,8 +262,8 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
-              className="flex justify-center"
-            >
+              className="flex justify-center">
+              
               <div className="relative w-full max-w-sm">
                 {/* Map container with gold glow border */}
                 <div
@@ -271,16 +271,16 @@ export default function LandingPage() {
                   style={{
                     background: "rgba(12, 49, 64, 0.5)",
                     boxShadow: "0 0 40px rgba(200, 150, 42, 0.2), 0 0 80px rgba(200, 150, 42, 0.08), inset 0 0 60px rgba(12, 49, 64, 0.3)",
-                    border: "1.5px solid rgba(200, 150, 42, 0.35)",
-                  }}
-                >
+                    border: "1.5px solid rgba(200, 150, 42, 0.35)"
+                  }}>
+                  
                   {/* Map silhouette */}
                   <img
                     src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/945b4a89f_generated_image.png"
                     alt="خريطة المملكة العربية السعودية"
                     className="w-full h-full object-contain p-4"
-                    style={{ filter: "drop-shadow(0 0 15px rgba(200, 150, 42, 0.3))" }}
-                  />
+                    style={{ filter: "drop-shadow(0 0 15px rgba(200, 150, 42, 0.3))" }} />
+                  
                 </div>
 
                 {/* Decorative gold skyline */}
@@ -302,8 +302,8 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
-              className="text-center lg:text-right"
-            >
+              className="text-center lg:text-right">
+              
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-white mb-5 leading-tight">
                 Serving <span className="text-brand-gold">NGOs</span> Across <span className="text-brand-gold">Saudi Arabia</span>
               </h2>
@@ -320,22 +320,22 @@ export default function LandingPage() {
               {/* Metric cards */}
               <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-sm mx-auto lg:mx-0">
                 {[
-                  { num: "13+", label: "Regions" },
-                  { num: "24", label: "Active NGOs" },
-                  { num: "1.2K+", label: "Beneficiaries" },
-                ].map((s) => (
-                  <div
-                    key={s.label}
-                    className="text-center rounded-xl py-4 px-2"
-                    style={{
-                      background: "linear-gradient(180deg, rgba(200,150,42,0.08) 0%, rgba(12,49,64,0.3) 100%)",
-                      border: "1px solid rgba(200,150,42,0.2)",
-                    }}
-                  >
+                { num: "13+", label: "Regions" },
+                { num: "24", label: "Active NGOs" },
+                { num: "1.2K+", label: "Beneficiaries" }].
+                map((s) =>
+                <div
+                  key={s.label}
+                  className="text-center rounded-xl py-4 px-2"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(200,150,42,0.08) 0%, rgba(12,49,64,0.3) 100%)",
+                    border: "1px solid rgba(200,150,42,0.2)"
+                  }}>
+                  
                     <p className="text-2xl sm:text-3xl font-bold text-brand-gold">{s.num}</p>
                     <p className="text-[11px] sm:text-xs text-white/50 mt-1.5">{s.label}</p>
                   </div>
-                ))}
+                )}
               </div>
             </motion.div>
           </div>
@@ -347,6 +347,6 @@ export default function LandingPage() {
 
       {/* ── Floating Controls ── */}
       <FloatingControls />
-    </div>
-  );
+    </div>);
+
 }
