@@ -313,7 +313,8 @@
       "enum": [
         "\u062c\u062f\u064a\u062f",
         "\u062a\u062d\u062f\u064a\u062b",
-        "\u062e\u0627\u0631\u062c\u064a"
+        "\u062e\u0627\u0631\u062c\u064a",
+        "\u0645\u0639\u062a\u0645\u062f"
       ],
       "default": "\u062c\u062f\u064a\u062f",
       "description": "\u062d\u0627\u0644\u0629 \u0627\u0644\u0637\u0644\u0628"
@@ -400,12 +401,14 @@
         {
           "data.ngo_id": "{{user.data.ngo_id}}",
           "user_condition": {
-            "role": {
-              "$in": [
-                "ngo_manager",
-                "marketer"
-              ]
-            }
+            "role": "ngo_manager"
+          }
+        },
+        {
+          "data.ngo_id": "{{user.data.ngo_id}}",
+          "data.case_status": "\u0645\u0639\u062a\u0645\u062f",
+          "user_condition": {
+            "role": "marketer"
           }
         }
       ]
@@ -432,14 +435,18 @@
       ]
     },
     "delete": {
-      "user_condition": {
-        "role": {
-          "$in": [
-            "platform_admin",
-            "pdo"
-          ]
+      "$or": [
+        {
+          "user_condition": {
+            "role": "platform_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "pdo"
+          }
         }
-      }
+      ]
     }
   }
 }
