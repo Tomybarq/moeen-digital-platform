@@ -43,49 +43,63 @@ export default function SignInModal({ open, onClose }) {
             <X className="w-4 h-4" />
           </button>
 
-          {/* Header — Concentric Gold Halo */}
-          <div className="relative text-center py-10 overflow-hidden" style={{
-            backgroundImage: "url('https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/4679c316f_generated_image.png')",
+          {/* Header — Sapphire Portal */}
+          <div className="relative text-center py-8 overflow-hidden" style={{
+            backgroundImage: "url('https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/2991ef257_generated_image.png')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            backgroundColor: "#0a0e14",
+            backgroundColor: "#000b1d",
           }}>
-            {/* Lock icon with 3D glassmorphism */}
-            <div className="relative z-10 mx-auto mb-4" style={{ width: 72, height: 72 }}>
-              {/* Outer halo ring 1 */}
-              <div className="absolute inset-0 rounded-full" style={{
-                background: "radial-gradient(circle, rgba(197,160,89,0.24) 0%, rgba(197,160,89,0.06) 50%, transparent 70%)",
-                filter: "blur(4px)",
+            {/* Text — above the lock */}
+            <h2 className="relative z-10 text-2xl font-extrabold mb-1 font-display" style={{
+              color: "#e0eaff",
+              textShadow: "0 0 30px rgba(45,107,183,0.5)",
+            }}>مرحباً بك</h2>
+            <p className="relative z-10 text-sm font-medium mb-6" style={{
+              color: "#c0ccf0",
+              textShadow: "0 0 15px rgba(45,107,183,0.25)",
+            }}>قم بتسجيل الدخول للمنصة</p>
+
+            {/* Lock icon with concentric gold rings */}
+            <div className="relative z-10 mx-auto" style={{ width: 80, height: 80 }}>
+              {/* Ring 4 — outermost */}
+              <div className="absolute rounded-full" style={{
+                top: -28, left: -28, right: -28, bottom: -28,
+                border: "1px solid rgba(197,160,89,0.2)",
               }} />
-              {/* Outer halo ring 2 */}
-              <div className="absolute -inset-3 rounded-full" style={{
-                background: "radial-gradient(circle, rgba(197,160,89,0.15) 0%, transparent 60%)",
-                filter: "blur(6px)",
+              {/* Ring 3 */}
+              <div className="absolute rounded-full" style={{
+                top: -18, left: -18, right: -18, bottom: -18,
+                border: "1px solid rgba(197,160,89,0.35)",
+                boxShadow: "0 0 12px rgba(197,160,89,0.1)",
               }} />
-              {/* Outer halo ring 3 */}
-              <div className="absolute -inset-6 rounded-full" style={{
-                background: "radial-gradient(circle, rgba(197,160,89,0.08) 0%, transparent 50%)",
-                filter: "blur(8px)",
+              {/* Ring 2 */}
+              <div className="absolute rounded-full" style={{
+                top: -9, left: -9, right: -9, bottom: -9,
+                border: "1px solid rgba(197,160,89,0.5)",
+                boxShadow: "0 0 15px rgba(197,160,89,0.15)",
               }} />
-              {/* Glassmorphism lock container */}
+              {/* Ring 1 — innermost */}
+              <div className="absolute rounded-full" style={{
+                top: 2, left: 2, right: 2, bottom: 2,
+                border: "1px solid rgba(197,160,89,0.6)",
+                boxShadow: "0 0 18px rgba(197,160,89,0.2)",
+              }} />
+
+              {/* Glass lock container */}
               <div className="absolute inset-0 rounded-full flex items-center justify-center" style={{
-                background: "rgba(255,255,255,0.06)",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                border: "1.5px solid rgba(212,175,55,0.3)",
-                boxShadow: "0 0 40px rgba(212,175,55,0.08), inset 0 0 20px rgba(255,255,255,0.04)",
+                background: "rgba(138,184,233,0.08)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                border: "1.5px solid rgba(138,184,233,0.3)",
+                boxShadow: "0 0 30px rgba(45,107,183,0.25), inset 0 0 25px rgba(138,184,233,0.06)",
               }}>
-                <Lock className="w-8 h-8" style={{ color: "#d4af37", filter: "drop-shadow(0 0 6px rgba(212,175,55,0.3))" }} />
+                <Lock className="w-9 h-9" style={{
+                  color: "#8ab8e9",
+                  filter: "drop-shadow(0 0 8px rgba(138,184,233,0.4)) drop-shadow(0 0 16px rgba(45,107,183,0.3))",
+                }} />
               </div>
             </div>
-
-            {/* Text */}
-            <h2 className="relative z-10 text-2xl font-extrabold mb-1.5 font-display" style={{
-              background: "linear-gradient(180deg, #e6c273 0%, #c5a059 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}>مرحباً بك</h2>
-            <p className="relative z-10 text-sm" style={{ color: "#d1d5db" }}>قم بتسجيل الدخول للمنصة</p>
           </div>
 
           {/* Form */}
