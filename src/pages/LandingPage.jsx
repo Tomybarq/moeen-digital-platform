@@ -231,35 +231,25 @@ export default function LandingPage() {
               className="flex justify-center"
             >
               <div className="relative w-full max-w-sm">
-                {/* Saudi Map silhouette */}
-                <div className="w-full aspect-[3/4] relative">
-                  <svg viewBox="0 0 200 260" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                    {/* Saudi Arabia rough outline */}
-                    <path
-                      d="M100 20 C130 18 155 35 165 55 C175 78 178 100 170 120 C162 140 150 150 140 158 C128 168 118 172 110 175 C102 178 95 182 90 190 C84 200 80 210 78 220 C76 230 78 245 85 252 C92 258 110 260 120 258 C130 256 138 250 145 242 C152 234 155 220 155 210 C155 200 150 192 145 182 C140 172 138 165 140 158 C142 150 148 145 152 138 C156 130 158 120 155 110 C152 100 145 92 135 88 C125 84 112 82 100 85 C88 88 78 95 72 105 C66 115 63 128 62 140 C60 152 60 162 62 170 C64 178 68 182 72 175 C76 168 78 158 78 150"
-                      fill="#c8972a"
-                      fillOpacity="0.12"
-                      stroke="#c8972a"
-                      strokeWidth="2"
-                    />
-                    {/* Pin dots on major cities */}
-                    <circle cx="100" cy="110" r="5" fill="#c8972a" stroke="#0c3140" strokeWidth="1.5" />
-                    <circle cx="85" cy="85" r="3.5" fill="#c8972a" stroke="#0c3140" strokeWidth="1" />
-                    <circle cx="115" cy="130" r="3.5" fill="#c8972a" stroke="#0c3140" strokeWidth="1" />
-                    <circle cx="70" cy="140" r="3.5" fill="#c8972a" stroke="#0c3140" strokeWidth="1" />
-                    {/* Map pin shape marker */}
-                    <path d="M100 105 C97 102 94 102 93 104 C91 107 92 111 95 114 L100 120 L105 114 C108 111 109 107 107 104 C106 102 103 102 100 105Z" fill="#0c3140" />
-                  </svg>
+                {/* Saudi Map image */}
+                <div className="w-full aspect-[3/4] relative rounded-2xl overflow-hidden shadow-lg border border-brand-gold/20">
+                  <img
+                    src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/0a3507c33_generated_image.png"
+                    alt="خريطة المملكة العربية السعودية"
+                    className="w-full h-full object-contain"
+                  />
+                  {/* Subtle overlay glow */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/10 to-transparent pointer-events-none" />
                 </div>
                 {/* Decorative skyline */}
-                <div className="absolute bottom-0 left-0 right-0 h-16 opacity-40">
-                  <svg viewBox="0 0 320 60" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 60 L0 30 L15 25 L25 35 L40 20 L50 32 L65 18 L75 28 L90 15 L100 25 L115 12 L125 22 L140 10 L150 20 L165 8 L175 18 L190 5 L200 15 L215 3 L225 13 L240 8 L250 18 L265 5 L275 15 L290 3 L300 12 L310 6 L320 10 L320 60 Z" fill="#0c3140" />
+                <div className="absolute -bottom-1 left-0 right-0 h-16 opacity-30 pointer-events-none">
+                  <svg viewBox="0 0 400 80" preserveAspectRatio="none" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 80 L0 40 L20 32 L40 45 L55 28 L70 40 L90 22 L105 35 L120 18 L140 30 L155 15 L170 25 L185 10 L200 22 L215 8 L230 18 L245 5 L260 15 L275 8 L290 18 L305 4 L320 12 L335 8 L350 16 L365 6 L380 14 L395 5 L400 10 L400 80 Z" fill="#0c3140" />
                   </svg>
                 </div>
-                {/* Palm trees */}
-                <div className="absolute bottom-2 left-8 text-3xl">🌴</div>
-                <div className="absolute bottom-3 left-2 text-2xl">🌴</div>
+                {/* Palm tree silhouettes */}
+                <div className="absolute -bottom-1 right-4 text-4xl pointer-events-none select-none opacity-80">🌴</div>
+                <div className="absolute -bottom-1 right-20 text-3xl pointer-events-none select-none opacity-80">🌴</div>
               </div>
             </motion.div>
 
