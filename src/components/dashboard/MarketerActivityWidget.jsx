@@ -1,27 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
-import { TrendingUp, Crown, Award, Star, Gem, Sparkles } from 'lucide-react';
-
-const MOCK_DATA = {
-  marketers: [
-    { id: 1, name: "أحمد عبدالله", funds: "45,000", conversion: 14 },
-    { id: 2, name: "سارة محمد", funds: "38,200", conversion: 12 },
-    { id: 3, name: "خالد فهد", funds: "29,500", conversion: 9 },
-  ],
-  trendData: [
-    { day: 'السبت', value: 12 },
-    { day: 'الأحد', value: 19 },
-    { day: 'الاثنين', value: 15 },
-    { day: 'الثلاثاء', value: 25 },
-    { day: 'الأربعاء', value: 22 },
-    { day: 'الخميس', value: 30 },
-    { day: 'الجمعة', value: 28 },
-  ],
-};
+import { TrendingUp, Crown, Award, Gem, Sparkles } from 'lucide-react';
+import { topMarketersLeaderboard, aggregateWeeklyTrend, totalActiveLinks, totalCollectedFunds } from "@/mocks/saudiMockData";
 
 const rankMeta = [
   { icon: Crown, color: "from-amber-400 to-yellow-600", glow: "shadow-amber-500/40", bg: "bg-amber-50" },
@@ -29,16 +13,13 @@ const rankMeta = [
   { icon: Gem, color: "from-teal-400 to-teal-600", glow: "shadow-teal-500/30", bg: "bg-teal-50" },
 ];
 
-const barWidths = ['w-[70%]', 'w-[55%]', 'w-[40%]'];
-
 export default function MarketerActivityWidget() {
-  const [data, setData] = useState(null);
+  const marketers = topMarketersLeaderboard;
+  const trendData = aggregateWeeklyTrend;
+  const totalLinks = totalActiveLinks;
+  const totalFunds = totalCollectedFunds;
 
-  useEffect(() => {
-    setData(MOCK_DATA);
-  }, []);
-
-  if (!data) return null;
+  if (!marketers.length) return null;
 
   return (
     <motion.div
@@ -100,11 +81,9 @@ export default function MarketerActivityWidget() {
         <CardContent className="p-6 grid grid-cols-1 md:grid-cols-12 gap-7">
           {/* ── Left: Leaderboard ── */}
           <div className="md:col-span-7 space-y-4">
-            {data.marketers.map((marketer, index) => {
+            {marketers.map((marketer, index) => {
               const meta = rankMeta[index];
               const Icon = meta.icon;
-              const barW = barWidths[index];
-
               return (
                 <motion.div
                   key={marketer.id}
@@ -214,7 +193,7 @@ export default function MarketerActivityWidget() {
               </div>
               <div className="h-40 w-full" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data.trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                  <AreaChart data={trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="imperialGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#2dd4bf" stopOpacity={0.35} />
@@ -267,7 +246,7 @@ export default function MarketerActivityWidget() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
                   </span>
-                  <span className="text-3xl font-extrabold text-white font-display">12</span>
+                  <span className="text-3xl font-extrabold text-white font-display">{totalLinks}</span>
                 </div>
                 <p className="text-[10px] text-slate-400 font-medium tracking-wide">رابط نشط</p>
               </div>
@@ -280,7 +259,7 @@ export default function MarketerActivityWidget() {
                   border: "1px solid rgba(200,150,42,0.15)",
                 }}
               >
-                <span className="text-3xl font-extrabold text-amber-400 font-display">112K</span>
+                <span className="text-3xl font-extrabold text-amber-400 font-display">{totalFunds}K</span>
                 <p className="text-[10px] text-slate-400 font-medium tracking-wide">إجمالي التبرعات</p>
               </div>
             </div>
