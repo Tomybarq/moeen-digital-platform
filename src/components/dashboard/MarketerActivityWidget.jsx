@@ -1,164 +1,156 @@
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Megaphone, Target, Eye, MousePointerClick } from "lucide-react";
-import {
-  RadialBarChart, RadialBar, ResponsiveContainer, Tooltip,
-  LineChart, Line, XAxis, YAxis, CartesianGrid,
-} from "recharts";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { motion } from 'framer-motion';
+import { TrendingUp, Crown, Award, Star } from 'lucide-react';
 
-const campaignData = [
-  { name: "الوصول", value: 78, fill: "hsl(142,76%,36%)" },
-  { name: "التفاعل", value: 55, fill: "#3B82F6" },
-  { name: "التحويل", value: 32, fill: "#A855F7" },
-];
-
-const reachTrend = [
-  { week: "أ١", وصول: 1200 },
-  { week: "أ٢", وصول: 1850 },
-  { week: "أ٣", وصول: 1600 },
-  { week: "أ٤", وصول: 2400 },
-  { week: "م١", وصول: 2100 },
-  { week: "م٢", وصول: 3100 },
-  { week: "م٣", وصول: 2800 },
-  { week: "م٤", وصول: 3600 },
-];
-
-const campaigns = [
-  { name: "حملة رمضان الخيري", reach: "١٢,٣٠٠", status: "نشطة", pct: 78 },
-  { name: "التوعية بحقوق الطفل", reach: "٨,٧٠٠", status: "نشطة", pct: 55 },
-  { name: "دعم المسنين", reach: "٥,٢٠٠", status: "مكتملة", pct: 100 },
-  { name: "التشغيل والتوظيف", reach: "٣,٩٠٠", status: "مسودة", pct: 20 },
-];
-
-const statusBadge = {
-  "نشطة": "bg-emerald-500/10 text-emerald-600",
-  "مكتملة": "bg-blue-500/10 text-blue-600",
-  "مسودة": "bg-muted text-muted-foreground",
+const MOCK_DATA = {
+  marketers: [
+    { id: 1, name: "أحمد عبدالله", funds: "45,000", conversion: 14 },
+    { id: 2, name: "سارة محمد", funds: "38,200", conversion: 12 },
+    { id: 3, name: "خالد فهد", funds: "29,500", conversion: 9 },
+  ],
+  trendData: [
+    { day: 'السبت', value: 12 },
+    { day: 'الأحد', value: 19 },
+    { day: 'الاثنين', value: 15 },
+    { day: 'الثلاثاء', value: 25 },
+    { day: 'الأربعاء', value: 22 },
+    { day: 'الخميس', value: 30 },
+    { day: 'الجمعة', value: 28 },
+  ],
 };
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload?.length) {
-    return (
-      <div className="bg-card border border-border rounded-xl px-3 py-2 text-sm shadow-lg">
-        <p className="font-medium text-foreground">{label}</p>
-        <p className="text-purple-500">{payload[0].value.toLocaleString("ar-SA")} وصول</p>
-      </div>
-    );
-  }
-  return null;
-};
+const rankMeta = [
+  { icon: Crown, color: "text-amber-500" },
+  { icon: Award, color: "text-slate-400" },
+  { icon: Star, color: "text-teal-600" },
+];
 
 export default function MarketerActivityWidget() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // TODO: Fetch live referral tracking data via @/api/coreClient from Moeen Cloud Engine.
+    setData(MOCK_DATA);
+  }, []);
+
+  if (!data) return null;
+
   return (
-    <Card className="border-border">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base font-bold flex items-center gap-2">
-            <Megaphone className="w-4 h-4 text-amber-500" />
-            نشاط المسوّقين والحملات
-          </CardTitle>
-          <Badge className="bg-amber-500/10 text-amber-600 border-amber-200 text-xs">
-            هذا الشهر
-          </Badge>
-        </div>
+    <Card dir="rtl" className="border-teal-100/60 shadow-xl shadow-teal-500/[0.04] bg-white overflow-hidden relative">
+      {/* Decorative anti-gravity glow behind card */}
+      <div className="absolute -top-20 -left-20 w-48 h-48 rounded-full bg-teal-500/[0.03] blur-3xl pointer-events-none" />
+
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-teal-50">
+        <CardTitle className="text-xl font-bold flex items-center gap-2 font-heading text-teal-900">
+          <div className="w-9 h-9 rounded-xl bg-teal-50 flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-teal-600" />
+          </div>
+          أداء المسوقين المتصدرين
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* KPIs */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { icon: Megaphone, label: "حملات مُنشأة", value: "١٥", color: "text-amber-600", bg: "bg-amber-500/10" },
-            { icon: Eye, label: "إجمالي الوصول", value: "٣٠,١٠٠", color: "text-purple-600", bg: "bg-purple-500/10" },
-            { icon: MousePointerClick, label: "نسبة التفاعل", value: "٥٥٪", color: "text-blue-600", bg: "bg-blue-500/10" },
-          ].map((kpi, i) => (
-            <motion.div
-              key={kpi.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/40"
-            >
-              <div className={`w-8 h-8 rounded-lg ${kpi.bg} flex items-center justify-center`}>
-                <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              </div>
-              <span className={`text-lg font-bold ${kpi.color}`}>{kpi.value}</span>
-              <span className="text-[10px] text-muted-foreground text-center leading-tight">{kpi.label}</span>
-            </motion.div>
-          ))}
+
+      <CardContent className="p-5 grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* ── Left Column: Leaderboard (60%) ── */}
+        <div className="md:col-span-7 space-y-3">
+          {data.marketers.map((marketer, index) => {
+            const RankIcon = rankMeta[index]?.icon || Star;
+            const rankColor = rankMeta[index]?.color || "text-teal-600";
+
+            return (
+              <motion.div
+                key={marketer.id}
+                whileHover={{ scale: 1.02, x: -6 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-gray-100/80 hover:border-teal-100 hover:bg-teal-50/30 transition-colors shadow-sm hover:shadow-md"
+              >
+                {/* Left side: rank + avatar + name + funds */}
+                <div className="flex items-center gap-3.5 text-right">
+                  <div className="w-8 flex justify-center">
+                    <RankIcon className={`w-6 h-6 ${rankColor}`} />
+                  </div>
+
+                  <Avatar className="h-10 w-10 border-2 border-teal-50 ring-2 ring-teal-50/50">
+                    <AvatarFallback className="bg-teal-50 text-teal-700 font-bold text-sm">
+                      {marketer.name.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div>
+                    <p className="font-bold text-sm text-teal-900 leading-tight">{marketer.name}</p>
+                    <p className="text-[11px] text-teal-600/70 mt-0.5">
+                      إجمالي التبرعات: <span className="font-bold text-teal-700">{marketer.funds} ريال</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right side: conversion badge */}
+                <Badge
+                  variant="secondary"
+                  className="bg-teal-50 text-teal-700 hover:bg-teal-100 text-xs font-bold px-2.5 py-1"
+                >
+                  معدل التحويل {marketer.conversion}%
+                </Badge>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Radial performance */}
-        <div className="flex items-center gap-3">
-          <div className="w-24 h-24 shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadialBarChart innerRadius="40%" outerRadius="100%" data={campaignData} startAngle={90} endAngle={-270}>
-                <RadialBar dataKey="value" cornerRadius={4} background={{ fill: "hsl(var(--muted))" }} />
-              </RadialBarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex-1 space-y-2">
-            {campaignData.map((d) => (
-              <div key={d.name} className="space-y-0.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">{d.name}</span>
-                  <span className="font-medium text-foreground">{d.value}٪</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-1.5">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${d.value}%` }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ backgroundColor: d.fill }}
-                    className="h-1.5 rounded-full"
+        {/* ── Right Column: Analytics (40%) ── */}
+        <div className="md:col-span-5 flex flex-col gap-4">
+          {/* Chart */}
+          <div className="bg-teal-50/30 rounded-xl p-4 border border-teal-50">
+            <p className="text-xs font-semibold text-teal-700 mb-3 text-right">
+              اتجاه التحويلات التسويقية
+            </p>
+            <div className="h-36 w-full" dir="ltr">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={data.trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="tealAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0d9488" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#5eead4' }} />
+                  <YAxis hide domain={[0, 'dataMax + 8']} />
+                  <Tooltip
+                    contentStyle={{
+                      direction: 'rtl',
+                      borderRadius: 12,
+                      border: '1px solid #ccfbf1',
+                      boxShadow: '0 4px 20px rgba(13,148,136,0.1)',
+                      fontSize: 12,
+                    }}
+                    formatter={(value) => [`${value}%`, 'معدل التحويل']}
                   />
-                </div>
-              </div>
-            ))}
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#0d9488"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#tealAreaGradient)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
 
-        {/* Reach trend */}
-        <div className="h-28">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">منحنى الوصول الأسبوعي</p>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={reachTrend} margin={{ top: 2, right: 0, left: -28, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-              <XAxis dataKey="week" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="وصول" stroke="#A855F7" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Campaign list */}
-        <div className="space-y-1.5">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">الحملات النشطة</p>
-          {campaigns.map((c, i) => (
-            <motion.div
-              key={c.name}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 + i * 0.05 }}
-              className="space-y-1 py-1.5 px-2 rounded-lg hover:bg-muted/40 transition-colors"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">{c.name}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-muted-foreground">{c.reach}</span>
-                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${statusBadge[c.status]}`}>{c.status}</span>
-                </div>
-              </div>
-              <div className="w-full bg-muted rounded-full h-1">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${c.pct}%` }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="h-1 rounded-full bg-amber-500"
-                />
-              </div>
-            </motion.div>
-          ))}
+          {/* Active Links Indicator */}
+          <div className="p-4 rounded-xl bg-white border border-teal-100/60 flex items-center justify-between shadow-sm">
+            <span className="text-sm font-medium text-teal-800">الروابط النشطة حالياً</span>
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+              </span>
+              <span className="font-extrabold text-lg text-teal-900">12</span>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

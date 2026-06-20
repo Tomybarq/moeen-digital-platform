@@ -14,6 +14,7 @@ import BeneficiaryStatusChart from "@/components/dashboard/BeneficiaryStatusChar
 import RecentActivityFeed from "@/components/dashboard/RecentActivityFeed";
 import RecentCasesTable from "@/components/dashboard/RecentCasesTable";
 import TopNGOsWidget from "@/components/dashboard/TopNGOsWidget";
+import MarketerActivityWidget from "@/components/dashboard/MarketerActivityWidget";
 import DashboardFilterBar from "@/components/dashboard/DashboardFilterBar";
 
 export default function Dashboard() {
@@ -235,6 +236,13 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <BeneficiaryStatusChart data={statusDistributionChart} />
           <TopNGOsWidget ngos={topNgosFormatted} />
+        </div>
+      }
+
+      {/* ── Marketer Leaderboard Row ── */}
+      {(isAdmin || isNgoManager) &&
+      <div className="grid grid-cols-1 gap-5">
+          <MarketerActivityWidget />
         </div>
       }
 
