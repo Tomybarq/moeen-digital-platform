@@ -68,27 +68,30 @@ export default function LandingPage() {
       <section className="min-h-[calc(100vh-73px)] flex" style={{ background: "#fcfcfc" }}>
         <div className="w-full grid grid-cols-1 lg:grid-cols-5">
 
-          {/* Right Column — Branding & Value (60% ≈ 3/5) */}
-          <div className="lg:col-span-3 flex flex-col justify-center relative overflow-hidden" style={{ background: "linear-gradient(160deg, #0c3140 0%, #0d4a60 50%, #0c3140 100%)" }}>
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-[0.06] -translate-y-32 translate-x-16" style={{ background: "#c8972a" }} />
-            <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-[0.04]" style={{ background: "#00A651" }} />
-            <div className="absolute top-1/2 right-1/3 w-1 h-48 -translate-y-1/2 opacity-[0.03]" style={{ background: "linear-gradient(180deg, transparent, #c8972a, transparent)" }} />
-
+          {/* Right Column — Branding & Value (60% ≈ 3/5) — Luxe Timeline */}
+          <div
+            className="lg:col-span-3 flex flex-col justify-center relative overflow-hidden"
+            style={{
+              backgroundImage: "url('https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9a719416b_generated_image.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundColor: "#0a0f1d",
+            }}
+          >
             <div className="relative z-10 px-8 sm:px-12 lg:px-16 py-10 lg:py-14">
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7 }}
-                className="mb-10">
-                
+                className="mb-8"
+              >
                 {/* Logo + name */}
                 <div className="flex items-center gap-3 mb-7">
                   <img
                     src="https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/9af41b6fb_logo-.jpg"
                     alt="معين"
-                    className="h-12 w-auto object-contain" />
-                  
+                    className="h-12 w-auto object-contain"
+                  />
                   <div>
                     <p className="font-display font-bold text-white text-lg leading-tight">منصة معين الرقمية</p>
                     <p className="text-[10px] text-brand-gold/60 tracking-widest">MOEEN DIGITAL PLATFORM</p>
@@ -97,38 +100,83 @@ export default function LandingPage() {
 
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-extrabold leading-tight text-white mb-4">
                   منصة{" "}
-                  <span style={{ color: "#c8972a" }}>ذكية</span>
+                  <span style={{ color: "#c5a059" }}>ذكية</span>
                   {" "}لإدارة العمل الخيري
                 </h1>
-                <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-md">منصة مصصمة بعناية، تربط المستفيدين بالمتبرعين من خلال بيانات آمنة، تحليلات فورية، وأثر قابل للقياس.
-
+                <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-md">
+                  منصة B2B تربط المستفيدين بالمتبرعين من خلال بيانات آمنة، تحليلات فورية، وأثر قابل للقياس.
                 </p>
               </motion.div>
 
-              {/* 3 Value Pillars */}
+              {/* 3 Value Pillars — Vertical Timeline */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.25 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                
-                {valuePillars.map((p, i) =>
+                className="relative space-y-5"
+              >
+                {/* Gold connecting line */}
                 <div
-                  key={p.en}
-                  className="rounded-2xl p-4 sm:p-5 transition-all group"
+                  className="absolute top-1 bottom-1 w-[1px] hidden sm:block"
                   style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    backdropFilter: "blur(8px)"
-                  }}>
-                  
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(200,151,42,0.12)" }}>
-                      <p.icon className="w-5 h-5" style={{ color: "#c8972a" }} />
+                    right: "28px",
+                    background: "linear-gradient(180deg, rgba(197,160,89,0.4), #c5a059 15%, #c5a059 85%, rgba(197,160,89,0.4))",
+                    boxShadow: "0 0 6px rgba(197,160,89,0.3)",
+                  }}
+                />
+
+                {valuePillars.map((p, i) => (
+                  <motion.div
+                    key={p.en}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.35 + i * 0.15 }}
+                    className="relative flex items-start gap-4 group"
+                  >
+                    {/* Timeline node — gold dot on the line */}
+                    <div className="hidden sm:flex shrink-0 items-center justify-center relative z-10" style={{ width: 56 }}>
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{
+                          background: "#c5a059",
+                          boxShadow: "0 0 12px rgba(197,160,89,0.5), 0 0 24px rgba(197,160,89,0.2)",
+                        }}
+                      />
                     </div>
-                    <h3 className="font-bold text-sm text-white mb-1.5">{p.title}</h3>
-                    <p className="text-[11px] sm:text-xs leading-relaxed text-white/45">{p.desc}</p>
-                  </div>
-                )}
+
+                    {/* Card */}
+                    <div
+                      className="flex-1 rounded-2xl p-4 sm:p-5 transition-all group-hover:border-brand-gold/40"
+                      style={{
+                        background: "rgba(30,37,56,0.7)",
+                        border: "1px solid rgba(197,160,89,0.15)",
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Text */}
+                        <div className="flex-1 text-right">
+                          <h3 className="font-bold text-sm sm:text-base text-white mb-1.5">{p.title}</h3>
+                          <p className="text-[11px] sm:text-xs leading-relaxed text-white/45">{p.desc}</p>
+                        </div>
+
+                        {/* Icon — right side within card */}
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                          style={{ background: "rgba(197,160,89,0.1)" }}
+                        >
+                          <p.icon className="w-5 h-5" style={{ color: "#c5a059" }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mobile gold dot (between icon and line, on right) */}
+                    <div className="sm:hidden absolute top-0 right-0 w-3 h-3 rounded-full" style={{
+                      background: "#c5a059",
+                      boxShadow: "0 0 8px rgba(197,160,89,0.4)",
+                    }} />
+                  </motion.div>
+                ))}
               </motion.div>
 
               {/* Trust badge strip */}
@@ -136,8 +184,8 @@ export default function LandingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.5 }}
-                className="mt-8 flex items-center gap-3 flex-wrap">
-                
+                className="mt-8 flex items-center gap-3 flex-wrap"
+              >
                 <TrustBadges />
               </motion.div>
             </div>
