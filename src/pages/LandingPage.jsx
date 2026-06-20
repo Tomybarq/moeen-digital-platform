@@ -100,7 +100,7 @@ export default function LandingPage() {
                   <span style={{ color: "#c8972a" }}>ذكية</span>
                   {" "}لإدارة العمل الخيري
                 </h1>
-                <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-md">منصة مصصمة بعنايةتربط المستفيدين بالمتبرعين من خلال بيانات آمنة، تحليلات فورية، وأثر قابل للقياس.
+                <p className="text-white/55 text-sm sm:text-base leading-relaxed max-w-md">منصة مصصمة بعناية، تربط المستفيدين بالمتبرعين من خلال بيانات آمنة، تحليلات فورية، وأثر قابل للقياس.
 
                 </p>
               </motion.div>
