@@ -43,39 +43,49 @@ export default function SignInModal({ open, onClose }) {
             <X className="w-4 h-4" />
           </button>
 
-          {/* Header — Diamond Pattern Luxe */}
-          <div className="overflow-hidden">
-            {/* Patterned upper section with outset/tabbed look */}
-            <div
-              className="mx-4 mt-4 py-8 rounded-2xl text-center relative overflow-hidden"
-              style={{
-                backgroundImage: "url('https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/54f351e30_generated_image.png')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            >
-              {/* Subtle dark overlay for contrast */}
-              <div className="absolute inset-0 bg-[#072b38]/30" />
-              {/* Lock icon with glassmorphism */}
-              <div
-                className="relative z-10 w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
-                style={{
-                  background: "rgba(255,255,255,0.08)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  border: "1.5px solid rgba(212,175,55,0.35)",
-                  boxShadow: "0 0 24px rgba(212,175,55,0.15)",
-                }}
-              >
-                <Lock className="w-6 h-6" style={{ color: "#d4af37" }} />
+          {/* Header — Concentric Gold Halo */}
+          <div className="relative text-center py-10 overflow-hidden" style={{
+            backgroundImage: "url('https://media.base44.com/images/public/6a2aca9f283d77c33f77ff49/4679c316f_generated_image.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundColor: "#0a0e14",
+          }}>
+            {/* Lock icon with 3D glassmorphism */}
+            <div className="relative z-10 mx-auto mb-4" style={{ width: 72, height: 72 }}>
+              {/* Outer halo ring 1 */}
+              <div className="absolute inset-0 rounded-full" style={{
+                background: "radial-gradient(circle, rgba(197,160,89,0.24) 0%, rgba(197,160,89,0.06) 50%, transparent 70%)",
+                filter: "blur(4px)",
+              }} />
+              {/* Outer halo ring 2 */}
+              <div className="absolute -inset-3 rounded-full" style={{
+                background: "radial-gradient(circle, rgba(197,160,89,0.15) 0%, transparent 60%)",
+                filter: "blur(6px)",
+              }} />
+              {/* Outer halo ring 3 */}
+              <div className="absolute -inset-6 rounded-full" style={{
+                background: "radial-gradient(circle, rgba(197,160,89,0.08) 0%, transparent 50%)",
+                filter: "blur(8px)",
+              }} />
+              {/* Glassmorphism lock container */}
+              <div className="absolute inset-0 rounded-full flex items-center justify-center" style={{
+                background: "rgba(255,255,255,0.06)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: "1.5px solid rgba(212,175,55,0.3)",
+                boxShadow: "0 0 40px rgba(212,175,55,0.08), inset 0 0 20px rgba(255,255,255,0.04)",
+              }}>
+                <Lock className="w-8 h-8" style={{ color: "#d4af37", filter: "drop-shadow(0 0 6px rgba(212,175,55,0.3))" }} />
               </div>
             </div>
 
-            {/* Solid lower section with text */}
-            <div className="bg-brand-navy px-6 pt-4 pb-6 text-center">
-              <h2 className="text-lg font-bold text-white mb-1">مرحباً بك</h2>
-              <p className="text-sm" style={{ color: "#a5b4bc" }}>قم بتسجيل الدخول للمنصة</p>
-            </div>
+            {/* Text */}
+            <h2 className="relative z-10 text-2xl font-extrabold mb-1.5 font-display" style={{
+              background: "linear-gradient(180deg, #e6c273 0%, #c5a059 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}>مرحباً بك</h2>
+            <p className="relative z-10 text-sm" style={{ color: "#d1d5db" }}>قم بتسجيل الدخول للمنصة</p>
           </div>
 
           {/* Form */}
