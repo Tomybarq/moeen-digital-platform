@@ -11,6 +11,7 @@ const rankMeta = [
   { icon: Crown, color: "from-amber-400 to-yellow-600", glow: "shadow-amber-500/40", bg: "bg-amber-50" },
   { icon: Award, color: "from-slate-300 to-slate-500", glow: "shadow-slate-400/30", bg: "bg-slate-50" },
   { icon: Gem, color: "from-teal-400 to-teal-600", glow: "shadow-teal-500/30", bg: "bg-teal-50" },
+  { icon: Sparkles, color: "from-indigo-400 to-indigo-600", glow: "shadow-indigo-500/30", bg: "bg-indigo-50" },
 ];
 
 export default function MarketerActivityWidget() {
