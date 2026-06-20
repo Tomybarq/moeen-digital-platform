@@ -7,6 +7,7 @@ import FeatureBanner from "@/components/landing/FeatureBanner";
 import ProcessFlow from "@/components/landing/ProcessFlow";
 import WhyMoeen from "@/components/landing/WhyMoeen";
 import FooterCTA from "@/components/landing/FooterCTA";
+import FloatingControls from "@/components/landing/FloatingControls";
 
 const heroFeatures = [
   {
@@ -434,6 +435,9 @@ export default function LandingPage() {
 
       {/* ── Sign In Modal ── */}
       <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
+
+      {/* ── Floating Controls ── */}
+      <FloatingControls />
     </div>
   );
 }
