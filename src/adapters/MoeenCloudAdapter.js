@@ -1,88 +1,88 @@
 /**
- * Base44 Backend Adapter — Mo'een Digital Platform
+ * Moeen Cloud Adapter — Mo'een Digital Platform
  *
- * Wraps ALL Base44 SDK calls behind a standardized interface.
- * Pages never import base44 directly — they go through services,
- * which call this adapter, which calls the SDK.
+ * Wraps ALL Cloud API calls behind a standardised interface.
+ * Pages never import the SDK directly — they go through services,
+ * which call this adapter, which calls coreApi.
  *
  * To swap backends, replace this adapter with SupabaseAdapter,
  * FirebaseAdapter, or RestAdapter. The service layer stays untouched.
  */
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 
-const Base44Adapter = {
+const MoeenCloudAdapter = {
   /* ── NGO ─────────────────────────────────── */
   ngo: {
     async getAll() {
-      const result = await base44.entities.NGO.list("-created_date");
+      const result = await coreApi.entities.NGO.list("-created_date");
       return result ?? [];
     },
     async getById(id) {
-      return base44.entities.NGO.get(id);
+      return coreApi.entities.NGO.get(id);
     },
     async create(data) {
-      return base44.entities.NGO.create(data);
+      return coreApi.entities.NGO.create(data);
     },
     async update(id, data) {
-      return base44.entities.NGO.update(id, data);
+      return coreApi.entities.NGO.update(id, data);
     },
     async delete(id) {
-      return base44.entities.NGO.delete(id);
+      return coreApi.entities.NGO.delete(id);
     },
   },
 
   /* ── Beneficiary ──────────────────────────── */
   beneficiary: {
     async getAll() {
-      const result = await base44.entities.Beneficiary.list("-created_date");
+      const result = await coreApi.entities.Beneficiary.list("-created_date");
       return result ?? [];
     },
     async getById(id) {
-      return base44.entities.Beneficiary.get(id);
+      return coreApi.entities.Beneficiary.get(id);
     },
     async create(data) {
-      return base44.entities.Beneficiary.create(data);
+      return coreApi.entities.Beneficiary.create(data);
     },
     async update(id, data) {
-      return base44.entities.Beneficiary.update(id, data);
+      return coreApi.entities.Beneficiary.update(id, data);
     },
     async delete(id) {
-      return base44.entities.Beneficiary.delete(id);
+      return coreApi.entities.Beneficiary.delete(id);
     },
   },
 
   /* ── Marketer ─────────────────────────────── */
   marketer: {
     async getAll() {
-      const result = await base44.entities.Marketer.list("-created_date");
+      const result = await coreApi.entities.Marketer.list("-created_date");
       return result ?? [];
     },
     async getById(id) {
-      return base44.entities.Marketer.get(id);
+      return coreApi.entities.Marketer.get(id);
     },
     async create(data) {
-      return base44.entities.Marketer.create(data);
+      return coreApi.entities.Marketer.create(data);
     },
     async update(id, data) {
-      return base44.entities.Marketer.update(id, data);
+      return coreApi.entities.Marketer.update(id, data);
     },
     async delete(id) {
-      return base44.entities.Marketer.delete(id);
+      return coreApi.entities.Marketer.delete(id);
     },
   },
 
   /* ── AuditLog ─────────────────────────────── */
   auditLog: {
     async create(data) {
-      return base44.functions.invoke("logAudit", data);
+      return coreApi.functions.invoke("logAudit", data);
     },
     async getAll(params = {}) {
       const { sort = "-created_date", limit = 100, skip = 0, query = {} } = params;
-      const result = await base44.entities.AuditLog.filter(query, sort, limit, skip);
+      const result = await coreApi.entities.AuditLog.filter(query, sort, limit, skip);
       return result ?? [];
     },
     async getById(id) {
-      return base44.entities.AuditLog.get(id);
+      return coreApi.entities.AuditLog.get(id);
     },
     async exportAll(params = {}) {
       const { query = {}, sort = "-created_date" } = params;
@@ -91,7 +91,7 @@ const Base44Adapter = {
       const limit = 500;
       let batch;
       do {
-        batch = await base44.entities.AuditLog.filter(query, sort, limit, skip);
+        batch = await coreApi.entities.AuditLog.filter(query, sort, limit, skip);
         results.push(...batch);
         skip += limit;
       } while (batch.length === limit);
@@ -102,87 +102,87 @@ const Base44Adapter = {
   /* ── Notification ─────────────────────────── */
   notification: {
     async getAll({ skip = 0, limit = 50, sort = "-created_date", query = {} } = {}) {
-      const result = await base44.entities.Notification.filter(query, sort, limit, skip);
+      const result = await coreApi.entities.Notification.filter(query, sort, limit, skip);
       return result ?? [];
     },
     async create(data) {
-      return base44.entities.Notification.create(data);
+      return coreApi.entities.Notification.create(data);
     },
     async markRead(id) {
-      return base44.entities.Notification.update(id, { is_read: true });
+      return coreApi.entities.Notification.update(id, { is_read: true });
     },
     async markAllRead() {
-      const unread = await base44.entities.Notification.filter({ is_read: false }, "-created_date", 500, 0);
+      const unread = await coreApi.entities.Notification.filter({ is_read: false }, "-created_date", 500, 0);
       for (const notification of unread) {
-        await base44.entities.Notification.update(notification.id, { is_read: true });
+        await coreApi.entities.Notification.update(notification.id, { is_read: true });
       }
     },
     async delete(id) {
-      return base44.entities.Notification.delete(id);
+      return coreApi.entities.Notification.delete(id);
     },
   },
 
   /* ── User ─────────────────────────────────── */
   user: {
     async getAll() {
-      const result = await base44.entities.User.list("-created_date");
+      const result = await coreApi.entities.User.list("-created_date");
       return result ?? [];
     },
     async getMe() {
-      return base44.auth.me();
+      return coreApi.auth.me();
     },
     async update(id, data) {
-      return base44.entities.User.update(id, data);
+      return coreApi.entities.User.update(id, data);
     },
     async updateMe(data) {
-      return base44.auth.updateMe(data);
+      return coreApi.auth.updateMe(data);
     },
     async inviteUser(email, role) {
-      return base44.users.inviteUser(email, role);
+      return coreApi.users.inviteUser(email, role);
     },
   },
 
   /* ── Dynamic entity access (for generic dialogs like ImportDialog) ── */
   async entityBulkCreate(entityName, rows) {
-    return base44.entities[entityName].bulkCreate(rows);
+    return coreApi.entities[entityName].bulkCreate(rows);
   },
   async entityCreate(entityName, data) {
-    return base44.entities[entityName].create(data);
+    return coreApi.entities[entityName].create(data);
   },
 
   /* ── Upload (non-entity) ───────────────────── */
   async uploadFile(file) {
-    return base44.integrations.Core.UploadFile({ file });
+    return coreApi.integrations.Core.UploadFile({ file });
   },
 
   /* ── Auth ─────────────────────────────────── */
   auth: {
     async me() {
-      return base44.auth.me();
+      return coreApi.auth.me();
     },
     async isAuthenticated() {
-      return base44.auth.isAuthenticated();
+      return coreApi.auth.isAuthenticated();
     },
     async updateMe(data) {
-      return base44.auth.updateMe(data);
+      return coreApi.auth.updateMe(data);
     },
     logout(redirectUrl) {
-      base44.auth.logout(redirectUrl);
+      coreApi.auth.logout(redirectUrl);
     },
     redirectToLogin(nextUrl) {
-      base44.auth.redirectToLogin(nextUrl);
+      coreApi.auth.redirectToLogin(nextUrl);
     },
     async resetPasswordRequest(email) {
-      return base44.auth.resetPasswordRequest(email);
+      return coreApi.auth.resetPasswordRequest(email);
     },
   },
 
   /* ── Integrations ─────────────────────────── */
   integrations: {
     async invokeLLM(params) {
-      return base44.integrations.Core.InvokeLLM(params);
+      return coreApi.integrations.Core.InvokeLLM(params);
     },
   },
 };
 
-export default Base44Adapter;
+export default MoeenCloudAdapter;

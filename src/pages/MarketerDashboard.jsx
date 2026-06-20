@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Megaphone, Sparkles, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ export default function MarketerDashboard() {
   // Fetch approved beneficiaries — RLS automatically scopes to marketer's NGO + case_status=معتمد
   const { data: beneficiaries = [], isLoading } = useQuery({
     queryKey: ["marketer-cases"],
-    queryFn: () => base44.entities.Beneficiary.filter({ case_status: "معتمد" }, "-created_date", 100),
+    queryFn: () => coreApi.entities.Beneficiary.filter({ case_status: "معتمد" }, "-created_date", 100),
   });
 
   // Unique filter options

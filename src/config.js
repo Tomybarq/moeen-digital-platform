@@ -6,13 +6,13 @@
  * requires changing ONLY this file + registering the adapter.
  *
  * Supported values:
- *   "base44"  — Base44 Backend (current, production)
+ *   "moeen"   — Moeen Cloud Engine (current, production)
  *   "mock"    — Local in-memory JSON (MVP/demo)
  *   "supabase" — Supabase PostgreSQL (future)
  *   "firebase" — Firebase Firestore (future)
  *   "api"     — Generic REST API (future)
  */
-export const DATA_PROVIDER = "base44";
+export const DATA_PROVIDER = "moeen";
 
 /** Simulated API latency range (ms) — applied by every service method */
 export const LATENCY_MIN = 300;

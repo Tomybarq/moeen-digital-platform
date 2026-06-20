@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,10 +71,10 @@ export default function SystemHealthTab() {
     setChecks({ db: STATUS.LOADING, beneficiaries: STATUS.LOADING, ngos: STATUS.LOADING, marketers: STATUS.LOADING, users: STATUS.LOADING });
 
     const results = await Promise.allSettled([
-      base44.entities.Beneficiary.list("-created_date", 1),
-      base44.entities.NGO.list("-created_date", 1),
-      base44.entities.Marketer.list("-created_date", 1),
-      base44.entities.User.list("-created_date", 1),
+      coreApi.entities.Beneficiary.list("-created_date", 1),
+      coreApi.entities.NGO.list("-created_date", 1),
+      coreApi.entities.Marketer.list("-created_date", 1),
+      coreApi.entities.User.list("-created_date", 1),
     ]);
 
     const newChecks = { db: STATUS.OK };
@@ -82,10 +82,10 @@ export default function SystemHealthTab() {
 
     const names = ["beneficiaries", "ngos", "marketers", "users"];
     const fullQueries = await Promise.allSettled([
-      base44.entities.Beneficiary.list(),
-      base44.entities.NGO.list(),
-      base44.entities.Marketer.list(),
-      base44.entities.User.list(),
+      coreApi.entities.Beneficiary.list(),
+      coreApi.entities.NGO.list(),
+      coreApi.entities.Marketer.list(),
+      coreApi.entities.User.list(),
     ]);
 
     names.forEach((name, i) => {
@@ -166,7 +166,7 @@ export default function SystemHealthTab() {
         <Separator />
         <CardContent className="px-5 divide-y divide-border">
           <HealthRow icon={Server}   label="قاعدة البيانات الرئيسية" status={checks.db}
-            sub="Base44 Cloud Database" />
+            sub="Moeen Cloud Engine" />
           <HealthRow icon={Users}    label="بيانات المستفيدين"  status={checks.beneficiaries}
             value={counts.beneficiaries !== undefined ? `${counts.beneficiaries} سجل` : undefined} />
           <HealthRow icon={Shield}   label="بيانات المنظمات"    status={checks.ngos}

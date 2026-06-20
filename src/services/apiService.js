@@ -2,15 +2,15 @@
  * @fileoverview Unified API Service — Mo'een Digital Platform
  *
  * THE SINGLE data-access layer for the entire frontend.
- * This is the ONLY file that imports Base44Adapter.
+ * This is the ONLY file that imports MoeenCloudAdapter.
  *
  * All frontend components, domain services, hooks, and modals MUST call
- * functions exported from this file. No other file may import Base44Adapter
+ * functions exported from this file. No other file may import MoeenCloudAdapter
  * or the base44 SDK directly.
  *
  * ── HOW TO SWAP BACKENDS ──────────────────────────────────────────────────
  * 1. Create a new adapter (e.g. SupabaseAdapter, RESTAdapter, SQLAdapter)
- *    with the SAME method signatures as Base44Adapter.
+ *    with the SAME method signatures as MoeenCloudAdapter.
  * 2. Change the single import below.
  * 3. Zero frontend changes required — every component already calls apiService.
  *
@@ -19,7 +19,7 @@
  * user-friendly Arabic messages via toast/alert — never raw technical errors.
  */
 
-import Base44Adapter from "@/adapters/Base44Adapter";
+import MoeenCloudAdapter from "@/adapters/MoeenCloudAdapter";
 import {
   mockGrowthSeries,
   mockPrioritySeries,
@@ -31,64 +31,64 @@ import {
 //  NGO — flat functions (backward‑compatible with Dashboard)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function fetchNGOs()                        { return Base44Adapter.ngo.getAll(); }
-export async function createNGO(data)                    { return Base44Adapter.ngo.create(data); }
-export async function updateNGO(id, data)                { return Base44Adapter.ngo.update(id, data); }
-export async function deleteNGO(id)                      { return Base44Adapter.ngo.delete(id); }
-export async function getNGOById(id)                     { return Base44Adapter.ngo.getById(id); }
+export async function fetchNGOs()                        { return MoeenCloudAdapter.ngo.getAll(); }
+export async function createNGO(data)                    { return MoeenCloudAdapter.ngo.create(data); }
+export async function updateNGO(id, data)                { return MoeenCloudAdapter.ngo.update(id, data); }
+export async function deleteNGO(id)                      { return MoeenCloudAdapter.ngo.delete(id); }
+export async function getNGOById(id)                     { return MoeenCloudAdapter.ngo.getById(id); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Beneficiary — flat functions (backward‑compatible with Dashboard)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function fetchBeneficiaries()               { return Base44Adapter.beneficiary.getAll(); }
-export async function createBeneficiary(data)            { return Base44Adapter.beneficiary.create(data); }
-export async function updateBeneficiary(id, data)        { return Base44Adapter.beneficiary.update(id, data); }
-export async function deleteBeneficiary(id)              { return Base44Adapter.beneficiary.delete(id); }
-export async function getBeneficiaryById(id)             { return Base44Adapter.beneficiary.getById(id); }
+export async function fetchBeneficiaries()               { return MoeenCloudAdapter.beneficiary.getAll(); }
+export async function createBeneficiary(data)            { return MoeenCloudAdapter.beneficiary.create(data); }
+export async function updateBeneficiary(id, data)        { return MoeenCloudAdapter.beneficiary.update(id, data); }
+export async function deleteBeneficiary(id)              { return MoeenCloudAdapter.beneficiary.delete(id); }
+export async function getBeneficiaryById(id)             { return MoeenCloudAdapter.beneficiary.getById(id); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Marketer — flat functions (backward‑compatible with Dashboard)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function fetchMarketers()                   { return Base44Adapter.marketer.getAll(); }
-export async function createMarketer(data)               { return Base44Adapter.marketer.create(data); }
-export async function updateMarketer(id, data)           { return Base44Adapter.marketer.update(id, data); }
-export async function deleteMarketer(id)                 { return Base44Adapter.marketer.delete(id); }
-export async function getMarketerById(id)                { return Base44Adapter.marketer.getById(id); }
+export async function fetchMarketers()                   { return MoeenCloudAdapter.marketer.getAll(); }
+export async function createMarketer(data)               { return MoeenCloudAdapter.marketer.create(data); }
+export async function updateMarketer(id, data)           { return MoeenCloudAdapter.marketer.update(id, data); }
+export async function deleteMarketer(id)                 { return MoeenCloudAdapter.marketer.delete(id); }
+export async function getMarketerById(id)                { return MoeenCloudAdapter.marketer.getById(id); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  User — flat functions
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function fetchUsers()                       { return Base44Adapter.user.getAll(); }
-export async function updateUser(id, data)               { return Base44Adapter.user.update(id, data); }
-export async function getUserMe()                        { return Base44Adapter.user.getMe(); }
-export async function updateUserMe(data)                 { return Base44Adapter.user.updateMe(data); }
-export async function inviteUser(email, role)            { return Base44Adapter.user.inviteUser(email, role); }
+export async function fetchUsers()                       { return MoeenCloudAdapter.user.getAll(); }
+export async function updateUser(id, data)               { return MoeenCloudAdapter.user.update(id, data); }
+export async function getUserMe()                        { return MoeenCloudAdapter.user.getMe(); }
+export async function updateUserMe(data)                 { return MoeenCloudAdapter.user.updateMe(data); }
+export async function inviteUser(email, role)            { return MoeenCloudAdapter.user.inviteUser(email, role); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Auth
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function authIsAuthenticated()              { return Base44Adapter.auth.isAuthenticated(); }
-export async function authMe()                           { return Base44Adapter.auth.me(); }
-export function authLogout(redirectUrl)                  { Base44Adapter.auth.logout(redirectUrl); }
-export function authRedirectToLogin(nextUrl)             { Base44Adapter.auth.redirectToLogin(nextUrl); }
-export async function authResetPasswordRequest(email)    { return Base44Adapter.auth.resetPasswordRequest(email); }
+export async function authIsAuthenticated()              { return MoeenCloudAdapter.auth.isAuthenticated(); }
+export async function authMe()                           { return MoeenCloudAdapter.auth.me(); }
+export function authLogout(redirectUrl)                  { MoeenCloudAdapter.auth.logout(redirectUrl); }
+export function authRedirectToLogin(nextUrl)             { MoeenCloudAdapter.auth.redirectToLogin(nextUrl); }
+export async function authResetPasswordRequest(email)    { return MoeenCloudAdapter.auth.resetPasswordRequest(email); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Upload
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function uploadFile(file)                   { return Base44Adapter.uploadFile(file); }
+export async function uploadFile(file)                   { return MoeenCloudAdapter.uploadFile(file); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Dynamic entity access (for generic dialogs like ImportDialog)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function entityBulkCreate(entityName, rows) { return Base44Adapter.entityBulkCreate(entityName, rows); }
-export async function entityCreate(entityName, data)     { return Base44Adapter.entityCreate(entityName, data); }
+export async function entityBulkCreate(entityName, rows) { return MoeenCloudAdapter.entityBulkCreate(entityName, rows); }
+export async function entityCreate(entityName, data)     { return MoeenCloudAdapter.entityCreate(entityName, data); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Repository‑pattern API objects (for domain‑service layer)
@@ -139,25 +139,25 @@ export async function fetchPrioritySeries()     { return Promise.resolve(mockPri
 export async function fetchStatusDistribution() { return Promise.resolve(mockStatusDistribution); }
 export async function fetchTopNGOs()            { return Promise.resolve(mockNgos); }
 // ── AuditLog ───────────────────────────────────────────────────────────
-export async function fetchAuditLogs(params)       { return Base44Adapter.auditLog.getAll(params); }
-export async function createAuditLog(data)         { return Base44Adapter.auditLog.create(data); }
-export async function getAuditLogById(id)          { return Base44Adapter.auditLog.getById(id); }
-export async function fetchAllAuditLogs(params)    { return Base44Adapter.auditLog.exportAll(params); }
+export async function fetchAuditLogs(params)       { return MoeenCloudAdapter.auditLog.getAll(params); }
+export async function createAuditLog(data)         { return MoeenCloudAdapter.auditLog.create(data); }
+export async function getAuditLogById(id)          { return MoeenCloudAdapter.auditLog.getById(id); }
+export async function fetchAllAuditLogs(params)    { return MoeenCloudAdapter.auditLog.exportAll(params); }
 
 // ── Notification ─────────────────────────────────────────────────────────
-export async function fetchNotifications(params)       { return Base44Adapter.notification.getAll(params); }
-export async function createNotification(data)         { return Base44Adapter.notification.create(data); }
-export async function markNotificationRead(id)          { return Base44Adapter.notification.markRead(id); }
-export async function markAllNotificationsRead()        { return Base44Adapter.notification.markAllRead(); }
-export async function deleteNotification(id)            { return Base44Adapter.notification.delete(id); }
+export async function fetchNotifications(params)       { return MoeenCloudAdapter.notification.getAll(params); }
+export async function createNotification(data)         { return MoeenCloudAdapter.notification.create(data); }
+export async function markNotificationRead(id)          { return MoeenCloudAdapter.notification.markRead(id); }
+export async function markAllNotificationsRead()        { return MoeenCloudAdapter.notification.markAllRead(); }
+export async function deleteNotification(id)            { return MoeenCloudAdapter.notification.delete(id); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  Reporting Engine
 // ═══════════════════════════════════════════════════════════════════════════
 
 export async function generateReport(reportType, filters = {}, format = "json") {
-  const { base44 } = await import("@/api/base44Client");
-  return base44.functions.invoke("generateReport", {
+  const { coreApi } = await import("@/api/coreClient");
+  return coreApi.functions.invoke("generateReport", {
     report_type: reportType,
     filters,
     format,
@@ -174,27 +174,27 @@ export async function generateReport(reportType, filters = {}, format = "json") 
  * where they explicitly filter by tenant.
  */
 export async function fetchTenantBeneficiaries(tenantId, params = {}) {
-  const { base44 } = await import("@/api/base44Client");
+  const { coreApi } = await import("@/api/coreClient");
   const query = { ...params, ngo_id: tenantId };
-  return base44.entities.Beneficiary.filter(query, "-created_date", 500, 0) ?? [];
+  return coreApi.entities.Beneficiary.filter(query, "-created_date", 500, 0) ?? [];
 }
 
 export async function fetchTenantMarketers(tenantId, params = {}) {
-  const { base44 } = await import("@/api/base44Client");
+  const { coreApi } = await import("@/api/coreClient");
   const query = { ...params, ngo_id: tenantId };
-  return base44.entities.Marketer.filter(query, "-created_date", 500, 0) ?? [];
+  return coreApi.entities.Marketer.filter(query, "-created_date", 500, 0) ?? [];
 }
 
 export async function fetchTenantUsers(tenantId, params = {}) {
-  const { base44 } = await import("@/api/base44Client");
+  const { coreApi } = await import("@/api/coreClient");
   const query = { ...params, ngo_id: tenantId };
-  return base44.entities.User.filter(query, "", 200, 0) ?? [];
+  return coreApi.entities.User.filter(query, "", 200, 0) ?? [];
 }
 
 export async function fetchTenantAuditLogs(tenantId, params = {}) {
-  const { base44 } = await import("@/api/base44Client");
+  const { coreApi } = await import("@/api/coreClient");
   const query = { ...params, associationId: tenantId };
-  return base44.entities.AuditLog.filter(query, "-created_date", 200, 0) ?? [];
+  return coreApi.entities.AuditLog.filter(query, "-created_date", 200, 0) ?? [];
 }
 
 /**
@@ -202,6 +202,6 @@ export async function fetchTenantAuditLogs(tenantId, params = {}) {
  * Only accessible by platform_admin and pdo.
  */
 export async function verifyTenantIsolation(tenantIds = []) {
-  const { base44 } = await import("@/api/base44Client");
-  return base44.functions.invoke("verifyTenantIsolation", { tenant_ids: tenantIds });
+  const { coreApi } = await import("@/api/coreClient");
+  return coreApi.functions.invoke("verifyTenantIsolation", { tenant_ids: tenantIds });
 }

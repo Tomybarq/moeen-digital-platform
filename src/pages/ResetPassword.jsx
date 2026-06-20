@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,7 +45,7 @@ export default function ResetPassword() {
     }
     setLoading(true);
     try {
-      await base44.auth.resetPassword({ resetToken, newPassword });
+      await coreApi.auth.resetPassword({ resetToken, newPassword });
       setDone(true);
     } catch (err) {
       setError(err.message || "فشل تغيير كلمة المرور. قد يكون الرابط منتهي الصلاحية.");

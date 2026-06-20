@@ -5,7 +5,7 @@
  * Calls the server‑side getDashboardStats function which
  * returns lightweight pre‑computed stats (~2 KB vs the old ~8 MB).
  */
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 
 const DashboardStatsService = {
   /**
@@ -15,7 +15,7 @@ const DashboardStatsService = {
    * @returns {Promise<object>} The stats object from the backend
    */
   async getStats(filters = {}) {
-    const response = await base44.functions.invoke("getDashboardStats", {
+    const response = await coreApi.functions.invoke("getDashboardStats", {
       period: filters.period || "month",
       region: filters.region || "all",
     });

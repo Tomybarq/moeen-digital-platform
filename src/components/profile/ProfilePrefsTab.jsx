@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Settings, Bell, Globe, Moon, Sun, Save, Loader2, CheckCircle2, RotateCcw, Shield } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { useAuth } from "@/lib/AuthContext";
 
 const NOTIFICATION_TYPES = [
@@ -45,7 +45,7 @@ export default function ProfilePrefsTab() {
   const handleSave = async () => {
     setSaving(true); setSaved(false);
     try {
-      await base44.auth.updateMe({
+      await coreApi.auth.updateMe({
         notif_email: notifEmail,
         notif_system: notifSystem,
         notification_prefs: notifPrefs,

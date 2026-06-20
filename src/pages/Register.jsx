@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,7 +57,7 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      await base44.auth.register({ email, password });
+      await coreApi.auth.register({ email, password });
       setStep(2);
     } catch (err) {
       setError(err.message || "فشل إنشاء الحساب. الرجاء المحاولة مرة أخرى.");
@@ -70,12 +70,12 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
+      const result = await coreApi.auth.verifyOtp({ email, otpCode });
       if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
+        coreApi.auth.setToken(result.access_token);
       }
       // Save extra profile data
-      await base44.auth.updateMe({ role, organization: organization || undefined });
+      await coreApi.auth.updateMe({ role, organization: organization || undefined });
       window.location.href = "/";
     } catch (err) {
       setError(err.message || "رمز التحقق غير صحيح. حاول مجدداً.");
@@ -87,7 +87,7 @@ export default function Register() {
   const handleResend = async () => {
     setError("");
     try {
-      await base44.auth.resendOtp(email);
+      await coreApi.auth.resendOtp(email);
     } catch (err) {
       setError(err.message || "تعذّر إعادة الإرسال");
     }
@@ -159,7 +159,7 @@ export default function Register() {
       <Button
         variant="outline"
         className="w-full h-11 text-sm font-medium mb-5 cursor-pointer gap-2"
-        onClick={() => base44.auth.loginWithProvider("google", "/")}
+        onClick={() => coreApi.auth.loginWithProvider("google", "/")}
         type="button"
       >
         <GoogleIcon className="w-4 h-4" />

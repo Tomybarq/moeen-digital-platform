@@ -1,14 +1,10 @@
-import { createClient } from '@base44/sdk';
-import { appParams } from '@/lib/app-params';
-
-const { appId, token, functionsVersion, appBaseUrl } = appParams;
-
-//Create a client with authentication required
-export const base44 = createClient({
-  appId,
-  token,
-  functionsVersion,
-  serverUrl: '',
-  requiresAuth: false,
-  appBaseUrl
-});
+/**
+ * Backward-compatibility re-export — Moeen Cloud Engine.
+ *
+ * Required by the platform-managed AuthContext.jsx which must
+ * import { base44 } from '@/api/base44Client'.
+ *
+ * This file now delegates to coreClient. All new code should
+ * import from '@/api/coreClient' directly.
+ */
+export { base44 } from '@/api/coreClient';

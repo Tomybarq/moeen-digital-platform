@@ -13,7 +13,7 @@ import {
   FileText, Paperclip, CheckCircle2, User,
   Download, FileSpreadsheet, Loader2,
 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { toast } from "sonner";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
@@ -92,7 +92,7 @@ export default function BeneficiaryDetail() {
   const handleExportPDF = async () => {
     setExporting("pdf");
     try {
-      const response = await base44.functions.invoke("generateBeneficiaryReport", {
+      const response = await coreApi.functions.invoke("generateBeneficiaryReport", {
         beneficiary_id: id,
         format: "pdf",
       });
@@ -114,7 +114,7 @@ export default function BeneficiaryDetail() {
   const handleExportExcel = async () => {
     setExporting("excel");
     try {
-      const response = await base44.functions.invoke("generateBeneficiaryReport", {
+      const response = await coreApi.functions.invoke("generateBeneficiaryReport", {
         beneficiary_id: id,
         format: "excel",
       });

@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Upload, FileText, Paperclip, Trash2, X } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 
 export default function StepDocumentsUpload({ form, setForm }) {
   const [uploading, setUploading] = useState(false);
@@ -12,7 +12,7 @@ export default function StepDocumentsUpload({ form, setForm }) {
     setUploading(true);
     const uploaded = [];
     for (const file of Array.from(files)) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await coreApi.integrations.Core.UploadFile({ file });
       uploaded.push({ url: file_url, name: file.name, type });
     }
     setForm(p => ({ ...p, documents: [...(p.documents || []), ...uploaded] }));

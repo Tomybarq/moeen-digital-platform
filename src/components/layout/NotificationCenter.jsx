@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { fetchNotifications, markNotificationRead, markAllNotificationsRead, deleteNotification } from "@/services/apiService";
 import { useAuth } from "@/lib/AuthContext";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import moment from "moment";
 
 const TYPE_LABELS = {
@@ -72,7 +72,7 @@ export default function NotificationCenter() {
 
   // Subscribe to new notifications in real time
   useEffect(() => {
-    const unsubscribe = base44.entities.Notification.subscribe((event) => {
+    const unsubscribe = coreApi.entities.Notification.subscribe((event) => {
       if (event.type === "create" && event.data?.user_id === user?.id) {
         setNotifications(prev => [event.data, ...prev]);
         setUnreadCount(c => c + 1);

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/AuthContext";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import ReportTemplateCard from "@/components/reports/ReportTemplateCard";
 import ReportFilters from "@/components/reports/ReportFilters";
 import ReportPreview from "@/components/reports/ReportPreview";
@@ -27,7 +27,7 @@ export default function Reports() {
   const { data: reportResponse, isFetching, error, refetch } = useQuery({
     queryKey: ["report", selectedReport, filters],
     queryFn: async () => {
-      const response = await base44.functions.invoke("generateReport", {
+      const response = await coreApi.functions.invoke("generateReport", {
         report_type: selectedReport,
         filters,
         format: "json",

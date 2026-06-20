@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -33,17 +33,17 @@ function StatMini({ label, value, sub, color = "text-primary" }) {
 export default function ActivityMonitorTab() {
   const { data: marketers = [] } = useQuery({
     queryKey: ["marketers-monitor"],
-    queryFn: () => base44.entities.Marketer.list("-created_date"),
+    queryFn: () => coreApi.entities.Marketer.list("-created_date"),
   });
 
   const { data: beneficiaries = [] } = useQuery({
     queryKey: ["beneficiaries-monitor"],
-    queryFn: () => base44.entities.Beneficiary.list("-created_date"),
+    queryFn: () => coreApi.entities.Beneficiary.list("-created_date"),
   });
 
   const { data: ngos = [] } = useQuery({
     queryKey: ["ngos-monitor"],
-    queryFn: () => base44.entities.NGO.list(),
+    queryFn: () => coreApi.entities.NGO.list(),
   });
 
   // ── Marketer Activity stats ──────────────────────────────────────────────

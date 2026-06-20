@@ -4,10 +4,8 @@
  * Orchestrates all NGO operations. The UI never touches the adapter
  * or SDK directly — it only calls methods on this service.
  *
- * To swap backends, change the import from:
- *   import Base44Adapter from "@/adapters/Base44Adapter";
- * to:
- *   import SupabaseAdapter from "@/adapters/SupabaseAdapter";
+ * To swap backends, change the adapter import in apiService.js
+ * from MoeenCloudAdapter to SupabaseAdapter.
  *
  * This file stays identical.
  */

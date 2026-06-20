@@ -11,7 +11,7 @@
 
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/AuthContext";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 
 const TenantContext = createContext();
 
@@ -37,7 +37,7 @@ export function TenantProvider({ children }) {
 
     const loadTenants = async () => {
       try {
-        const allNgos = await base44.entities.NGO.list("name");
+        const allNgos = await coreApi.entities.NGO.list("name");
         setTenants(allNgos || []);
       } catch {
         setTenants([]);

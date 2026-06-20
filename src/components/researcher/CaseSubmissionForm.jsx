@@ -13,7 +13,7 @@ import {
   ChevronLeft, ChevronRight, CheckCircle2, Upload,
   AlertTriangle, ArrowUp, Minus, ArrowDown, Trash2, X,
 } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { coreApi } from "@/api/coreClient";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -182,7 +182,7 @@ function StepDocuments({ form, setForm }) {
     setUploadError("");
     const uploaded = [];
     for (const file of Array.from(files)) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await coreApi.integrations.Core.UploadFile({ file });
       uploaded.push({ url: file_url, name: file.name, type });
     }
     setForm(p => ({ ...p, documents: [...(p.documents || []), ...uploaded] }));
@@ -356,7 +356,7 @@ export default function CaseSubmissionForm({ researcherName, onSuccess }) {
   const handleSubmit = async () => {
     setSubmitting(true);
     const docs = (form.documents || []).map(d => d.url);
-    await base44.entities.Beneficiary.create({
+    await coreApi.entities.Beneficiary.create({
       ...form,
       age: form.age ? Number(form.age) : undefined,
       dependents_count: form.dependents_count ? Number(form.dependents_count) : undefined,
