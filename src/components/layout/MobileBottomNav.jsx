@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { ROLES } from "@/lib/rbac";
 
 const items = [
-  { label: "الرئيسية",   icon: LayoutDashboard, path: "/" },
+  { label: "الرئيسية",   icon: LayoutDashboard, path: "/dashboard" },
   { label: "المستفيدون", icon: Users,           path: "/beneficiaries" },
   { label: "تسجيل",      icon: ClipboardPlus,   path: "/researcher", center: true, roles: [ROLES.RESEARCHER, ROLES.PLATFORM_ADMIN, ROLES.NGO_MANAGER] },
   { label: "المنظمات",   icon: Building2,       path: "/ngos" },

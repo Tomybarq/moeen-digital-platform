@@ -10,18 +10,20 @@ import { cn } from "@/lib/utils";
 
 /* ── Page titles (RTL Arabic) ──────────────────── */
 const pageTitles = {
-  "/": "لوحة التحكم",
-  "/ngos": "المنظمات",
+  "/dashboard": "لوحة التحكم الشاملة",
+  "/ngos": "إدارة المنظمات",
   "/ngo-performance": "أداء المنظمات",
-  "/beneficiaries": "المستفيدون",
+  "/beneficiaries": "إدارة المستفيدين",
+  "/beneficiaries/detail": "تفاصيل المستفيد",
   "/marketers": "المسوّقون",
+  "/marketer-dashboard": "لوحة المسوق الذكية",
+  "/researcher": "مساحة الباحث الاجتماعي",
   "/profile": "الملف الشخصي",
   "/settings": "إعدادات المنصة",
-  "/users": "إدارة المستخدمين",
-  "/researcher": "مساحة الباحث",
-  "/beneficiaries/detail": "ملف المستفيد",
-  "/reports": "التقارير",
-  "/audit-logs": "سجل التدقيق",
+  "/users": "إدارة المستخدمين والأعضاء",
+  "/reports": "التقارير الإدارية",
+  "/audit-logs": "سجل التدقيق الرقمي",
+  "/forbidden": "غير مصرّح",
 };
 
 /* ── Animation constants ───────────────────────── */

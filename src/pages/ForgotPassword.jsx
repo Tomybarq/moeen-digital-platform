@@ -31,9 +31,9 @@ export default function ForgotPassword() {
       title="استعادة كلمة المرور"
       subtitle="أدخل بريدك الإلكتروني وسنرسل لك رابط الاستعادة"
       footer={
-        <Link to="/login" className="inline-flex items-center gap-1.5 text-primary font-semibold hover:underline">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-primary font-semibold hover:underline">
           <ArrowRight className="w-3.5 h-3.5" />
-          العودة لتسجيل الدخول
+          العودة للمنصة
         </Link>
       }
     >

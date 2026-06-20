@@ -274,6 +274,13 @@ export default function LandingPage() {
                       الدخول خاص للمنظمات الأهلية — تواصل مع إدارة المنصة للدخول
                     </span>
                   </div>
+
+                  {/* Forgot password link */}
+                  <div className="text-center pt-2">
+                    <a href="/forgot-password" className="text-sm text-brand-gold hover:text-brand-gold-light font-medium transition-colors hover:underline">
+                      نسيت كلمة المرور؟
+                    </a>
+                  </div>
                 </form>
               </div>
             </motion.div>
